@@ -1,0 +1,65 @@
+---
+title: "Diagnostic and Prognostic Prediction Models for Silicosis"
+subtitle: "Search Strategy and Results"
+author: 
+  - "Javier Mancilla Galindo, junior researcher"
+  - "Dr. Susan Peters, Supervisor"
+date: today
+execute: 
+  echo: false
+  warning: false
+toc: true
+toc-depth: 1
+format:
+  pdf:
+    documentclass: scrartcl
+  docx:
+    highlight-style: github
+bibliography: lexces-silicosis-predict.bib
+csl: american-medical-association.csl
+editor: source
+---
+
+\pagebreak
+
+# Description 
+
+The objective of this systematic serach of the literature is to scope for research articles reporting diagnostic and prognostic prediction models of silicosis (or pneumoconiosis).
+
+# Search Strategy 
+
+## Keywords:
+
+The keywords will adapt to [MeSH terms](https://www.ncbi.nlm.nih.gov/mesh/) when available, and a link to the MeSH term will accompany the keyword when this is the case.
+
+## Database and search engine
+
+The search will initially be conducted in the MEDLINE database (Ovid-MEDLINE search engine). Depending on the results, different databases and/or search engines could be considered.
+
+\pagebreak
+
+# Results 
+
+### Initial search strategy
+
+The initial search was conducted on 02/09/2024. The intention of this search with few terms was to retreive a low number of studies in order to identify those relevant to train the ML ASreview model in a subsequent wider search strategy. A total of **56** results were identified with the following search string: 
+
+> (Silicosis/ or Pneumoconiosis/) and prediction.mp. [mp=title, book title, abstract, original title, name of substance word, subject heading word, floating sub-heading word, keyword heading word, organism supplementary concept word, protocol supplementary concept word, rare disease supplementary concept word, unique identifier, synonyms, population supplementary concept word, anatomy supplementary concept word]
+
+
+### Broad search strategy
+
+> (Silicosis/ or Pneumoconiosis/) and (predict$ or algorithm or score or diagnos$ or prognos$).mp. [mp=title, book title, abstract, original title, name of substance word, subject heading word, floating sub-heading word, keyword heading word, organism supplementary concept word, protocol supplementary concept word, rare disease supplementary concept word, unique identifier, synonyms, population supplementary concept word, anatomy supplementary concept word]
+
+-   **Results: 4146**, unfiltered.
+
+
+\pagebreak
+
+# ASReview
+
+In progress...
+
+\pagebreak
+
+# References

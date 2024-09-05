@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Evaluation of a silicosis diagostic prediction rule"
+authors:
+  - family-names: Mancilla Galindo
+    given-names: Javier
+    orcid: https://orcid.org/0000-0002-0718-467X
+    affiliation: "Institute for Risk Assessment Sciences, Utrecht University"
+    email: "j.mancillagalindo@uu.nl"
+  - name: Lexces
+    url: "https://www.lexces.nl/"
+version: 1.0.0
+date-released: 2024-09-05
+doi: pending
+license: MIT
+repository-code: "https://github.com/UtrechtUniversity/lexces-silicosis-predict"

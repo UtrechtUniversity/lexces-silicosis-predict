@@ -1,0 +1,195 @@
+---
+title: "Silicosis Diagnostic Rule"
+subtitle: "Description of diagnostic rule and impact of misclassification error"
+author: 
+  - "Javier Mancilla Galindo, junior researcher"
+  - "Dr. Susan Peters, Supervisor"
+date: today
+execute: 
+  echo: true
+  warning: false
+format:
+  html:
+    toc: true
+    toc_float: true
+    embed-resources: true
+  pdf: 
+    toc: true
+    documentclass: scrartcl
+bibliography: ../docs/manuscript/lexces-silicosis-predict.bib
+csl: ../docs/manuscript/american-medical-association.csl
+editor: source
+---
+
+\pagebreak
+
+# Setup
+
+```{r}
+#| include: false  
+
+# Create directories for sub-folders  
+inputfolder <- "../data/raw"
+psfolder <- "../data/processed"
+tempfolder <- "../data/temp"
+figfolder <- "../results/output_figures"
+tabfolder <- "../results/output_tables"
+
+dir.create(inputfolder, showWarnings = FALSE)
+dir.create(psfolder, showWarnings = FALSE)
+dir.create(tempfolder, showWarnings = FALSE)
+dir.create(figfolder, showWarnings = FALSE)
+dir.create(tabfolder, showWarnings = FALSE)
+```
+
+## Packages used
+
+```{r}
+#| echo: true 
+
+if (!require("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+}
+
+pacman::p_load(
+  tidyverse,  # Used for basic data handling and visualization.
+  gt,         # Used to print html tables.  
+  report      # Used to cite packages used in this session.   
+)
+```
+
+\pagebreak
+
+## Session and package dependencies
+
+```{r}
+#| echo: false  
+
+# remove clutter
+session <- sessionInfo()
+session$BLAS <- NULL
+session$LAPACK <- NULL
+session$loadedOnly <- NULL
+# write log file
+writeLines(
+  capture.output(print(session, locale = FALSE)),
+  paste0("sessions/",lubridate::today(), "_session_Silicosis_diagnostic_rule.txt")
+)                 
+
+session
+```
+
+\pagebreak
+
+# Description
+
+A diagnostic prediction model to **rule out** pneumoconiosis in construction workers was developed and published in 2007.[@Suarthana2007]
+
+## Outcome
+
+The diagnosis of pneumoconiosis was defined as a chest x ray (CXR) indicative for pneumoconiosis (ILO profusion category ≥1/1), for which the ILO international classification of radiographs of pneumoconioses 2000 version was used. The most up-to-date version of this guideline is the 2022 revised edition.[@ILO2022] The ILO score is assigned upon examination of small opacities on CXR, in comparison to standardized CXR images, and is composed of a major category, which is followed by a subcategory. For instance, a score of 1/0 means that 1 was assigned as the major category, while 0 was strongly considered as the alternative. Conversely, a score of 0/1 means that the radiologist assigned 0 as the major category, but strongly considered 0 as suitable. A score 1/1 means that the CXR is consistent with the standardized CXR graded as 1.
+
+As mentioned earlier, an ILO score ≥1/1 was considered as the reference standard for pneumoconiosis to develop the prediction rule. This contrasts with standard recommendations at the time mentioning that an ILO category 1/0 or higher should be considered consistent with the presence of pneumoconiosis.[@Wagner1996] This decision was made under the rationale that a 1/0 cutoff would lead to greater misclassification. Furthermore, three different radiologists provided a score and the median score was used. Out of the 1291 workers included for analysis, a total of 37 (2.9%) had a score ≥1/1, whereas 131 (10.1%) were graded ≥1/0.
+
+## Predictors
+
+Lung function measured with a pneumotacometer on the same day of CXR obtention and worker questionnaire variables were assessed as potential predictors of pneumoconiosis. Seven candidate predictors were identified in univariable analysis:
+
+-   Age
+-   Smoking status
+-   Job title
+-   Time working in the construction industry
+-   Feeling unhealthy
+-   Cumulative exposure to silica index
+-   Standardized residual FEV1
+
+Continuous variables were dichotomized and modeled both as continuous and binary. Since there were no differences in the AUC of a prediction model with continuous vs binary predictores, the latter was kept for simplicity.
+
+The final model included five predictors:
+
+| Predictor                              | Value                   | Score | Beta |
+|-----------------------|-----------------|-----------------|-----------------|
+| Age                                    | ≥40 years               | 1.0   | 0.72 |
+| Smoking habit                          | Current smoker          | 1.0   | 0.70 |
+| Job title                              | High exposure job title | 1.5   | 1.14 |
+| Work duration in construction industry | ≥15 years               | 1.5   | 1.00 |
+| Self-related health                    | Feeling unhealthy       | 1.25  | 0.84 |
+| Standardized residual FEV1             | ≤ -1.0                  | 1.25  | 0.91 |
+
+## Diagnostic accuracy
+
+The uncorrected AUC of the model was 0.81 (95%CI: 0.75 to 0.86). The corrected AUC was 0.76. A cutoff point of 3.75 is suggested as optimal, with the following classification measures:
+
+|        | CXR + | CXR - |      |
+|--------|-------|-------|------|
+| Rule + | 33    | 534   | 567  |
+| Rule - | 4     | 720   | 724  |
+|        | 37    | 1254  | 1291 |
+
+-   Sensitivity: 89.2%,
+-   Specificity: 57.4%,
+-   Negative Predictive Value: 99.4%,
+-   Positive Predictive Value: 85.2%
+
+# Misclassification error of CXR
+
+A recent study has estimated misclassification error of CXR using ILO categories against high-resolution chest computed tomography (HRCT) as the reference standard.[@Hoy2024] Using the standardized cut-off of 1/0, CXR diagnostic performance against HRCT was as follows:
+
+|       | HRCT + | HRCT - |     |
+|-------|--------|--------|-----|
+| CXR + | 14     | 2      | 16  |
+| CXR - | 15     | 68     | 83  |
+|       | 29     | 70     | 99  |
+
+-   AUC: 0.727 (95%CI: 0.632 to 0.822)
+-   Sensitivity (TPR): 48% (95%CI: 29 to 68),
+-   Specificity: 97% (95%CI: 90 to 100),
+-   Negative Predictive Value: 81.9%,
+-   Positive Predictive Value: 87.5%
+-   False-positive rate: 2.86%  (FPR = 1 - Specificity)
+
+# Accounting for misclassification error
+
+Corrected ROC curve analysis of prediction models can be done by taking into account misclassification error for binary outcomes, provided that disease prevalence and misclassification rates are known.[@Zawistowski2017]
+
+
+```{r}
+#| echo: true
+source("scripts/Zawistowski_misclassification_functions.R")
+```
+
+```{r}
+#| echo: true
+source("scripts/Diagnostic_rule_AUC_misclassification.R")
+```
+
+## Results 
+
+```{r}
+cat("Mean ROC_true:", mean_ROC_true, "\n")
+cat("Mean ROC_misclassified:", mean_ROC_misclassified, "\n")
+cat("Mean ROC_adjusted:", mean_ROC_adjusted, "\n")
+```
+
+\pagebreak
+
+# Package References
+
+```{r}
+#| include: false
+report::cite_packages(session)
+```
+
+\pagebreak
+
+# References
+
+```{r}
+#| include: false
+
+# Run this chunk if you wish to clear your environment and unload packages.
+
+pacman::p_unload(negate = TRUE)
+
+rm(list = ls())
+```
