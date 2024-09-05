@@ -6,6 +6,8 @@ This repository contains the code and documentation for the evaluation of a diag
 
 This repository is a work in progress and is currently not fully enabled for re-use/collaboration. Further details of how to use it will be provided in the future as the project evolves.
 
+Test 
+
 ## Project Structure
 
 The project structure distinguishes three kinds of folders:
