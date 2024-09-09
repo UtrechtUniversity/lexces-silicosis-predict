@@ -6,7 +6,7 @@ author:
   - "Dr. Susan Peters, Supervisor"
 date: today
 execute: 
-  echo: true
+  echo: false
   warning: false
 format:
   html:
@@ -83,7 +83,7 @@ session
 
 # Description
 
-A diagnostic prediction model to **rule out** pneumoconiosis in construction workers was developed and published in 2007.[@Suarthana2007]
+A diagnostic prediction model to **rule out** pneumoconiosis in construction workers was developed and published in 2007.[@Suarthana2007] The study population consisted of Dutch natural stone and construction workers age 30 years and older. 
 
 ## Outcome
 
@@ -131,22 +131,89 @@ The uncorrected AUC of the model was 0.81 (95%CI: 0.75 to 0.86). The corrected A
 -   Negative Predictive Value: 99.4%,
 -   Positive Predictive Value: 85.2%
 
+\pagebreak
+
 # Misclassification error of CXR
 
-A recent study has estimated misclassification error of CXR using ILO categories against high-resolution chest computed tomography (HRCT) as the reference standard.[@Hoy2024] Using the standardized cut-off of 1/0, CXR diagnostic performance against HRCT was as follows:
+## CXR based on Meijer, et al.[@Meijer2011]
 
-|       | HRCT + | HRCT - |     |
-|-------|--------|--------|-----|
-| CXR + | 14     | 2      | 16  |
-| CXR - | 15     | 68     | 83  |
-|       | 29     | 70     | 99  |
+A subset of 180 participants enrolled in the study used for the development of the diagnostic prediction rule were invited for further examination with chest high resolution computed tomography (HRCT), of which a total of **n=79** participants underwent HRCT.[@Meijer2011] However, a final diagnosis of silicosis was not made based on HRCT and consensus by radiologists, and the study limited to report HRCT findings with their frequencies among different ILO thresholds.
 
--   AUC: 0.727 (95%CI: 0.632 to 0.822)
--   Sensitivity (TPR): 48% (95%CI: 29 to 68),
--   Specificity: 97% (95%CI: 90 to 100),
--   Negative Predictive Value: 81.9%,
--   Positive Predictive Value: 87.5%
--   False-positive rate: 2.86%  (FPR = 1 - Specificity)
+## CXR based on ILO 1/0 cut-off from Hoy, et al.[@Hoy2024]
+
+A recent study has estimated misclassification error of CXR using ILO categories against HRCT as the reference standard.[@Hoy2024] Using the standardized cut-off of 1/0, CXR diagnostic performance against HRCT was as follows:
+
+|       | HRCT + | HRCT - |      |
+|-------|--------|--------|------|
+| CXR + | 25     | 2      | 27   |
+| CXR - | 15     | 68     | 83   |
+|       | 40     | 70     | 110  |
+
+```{r}
+TP <- 25 # True positives
+TN <- 68 # True negatives 
+FP <- 2  # False positives
+FN <- 15 # False negatives 
+
+Sn <- TP/(TP+FN)
+Sp <- TN/(FP+TN)
+FPR <- 1-Sp
+PPV <- TP/(TP+FP)
+NPV <- TN/(FN+TN)
+LRpos <- Sn/(1-Sp)
+LRneg <- (1-Sn)/Sp
+Accuracy <- (TP+TN)/(TP+FP+FN+TN)
+DOR <- (TP*TN)/(FP*FN)
+
+cat("Sensitivity (%):", round((Sn*100),1), "\n")
+cat("Specificity (%):", round((Sp*100),1), "\n")
+cat("False Positive Rate (%):", round((FPR*100),1), "\n")
+cat("Positive Predictive Value; (%):", round((PPV*100),1), "\n")
+cat("Negative Predictive Value; (%):", round((NPV*100),1), "\n")
+cat("Likelihood Ratio (+):", round(LRpos,2), "\n")
+cat("Likelihood Ratio (-):", round(LRneg,2), "\n")
+cat("Accuracy (%):", round((Accuracy*100),1), "\n")
+cat("Diagnostic Odds Ratio:", round(DOR,2), "\n")
+```
+
+## CXR based on ILO 1/1 cut-off from Hoy, et al.[@Hoy2024]
+
+Using the summary data reported by Hoy, et al.[@Hoy2024] for different ILO scores, a 2x2 table can be recreated for the 1/1 ILO threshold: 
+
+|       | HRCT + | HRCT - |      |
+|-------|--------|--------|------|
+| CXR + | 23     | 2      | 27   |
+| CXR - | 17     | 68     | 83   |
+|       | 40     | 70     | 110  |
+
+```{r}
+TP <- 23 # True positives
+TN <- 68 # True negatives 
+FP <- 2  # False positives
+FN <- 17 # False negatives 
+
+Sn <- TP/(TP+FN)
+Sp <- TN/(FP+TN)
+FPR <- 1-Sp
+PPV <- TP/(TP+FP)
+NPV <- TN/(FN+TN)
+LRpos <- Sn/(1-Sp)
+LRneg <- (1-Sn)/Sp
+Accuracy <- (TP+TN)/(TP+FP+FN+TN)
+DOR <- (TP*TN)/(FP*FN)
+
+cat("Sensitivity (%):", round((Sn*100),1), "\n")
+cat("Specificity (%):", round((Sp*100),1), "\n")
+cat("False Positive Rate (%):", round((FPR*100),1), "\n")
+cat("Positive Predictive Value; (%):", round((PPV*100),1), "\n")
+cat("Negative Predictive Value; (%):", round((NPV*100),1), "\n")
+cat("Likelihood Ratio (+):", round(LRpos,2), "\n")
+cat("Likelihood Ratio (-):", round(LRneg,2), "\n")
+cat("Accuracy (%):", round((Accuracy*100),1), "\n")
+cat("Diagnostic Odds Ratio:", round(DOR,2), "\n")
+```
+
+\pagebreak
 
 # Accounting for misclassification error
 
@@ -160,36 +227,62 @@ source("scripts/Zawistowski_misclassification_functions.R")
 
 ```{r}
 #| echo: true
+#| eval: false
 source("scripts/Diagnostic_rule_AUC_misclassification.R")
 ```
 
 ## Results 
 
+### Main prediction model (ILO 1/1),[@Suarthana2007] misclassification based on ILO 1/0 by Hoy, et al.[@Hoy2024]
+
 ```{r}
-cat("Mean ROC_true:", mean_ROC_true, "\n")
-cat("Mean ROC_misclassified:", mean_ROC_misclassified, "\n")
-cat("Mean ROC_adjusted:", mean_ROC_adjusted, "\n")
+ROC_results <- read.csv(paste0(tabfolder,"/ROC_results_ILO1-1_Suarthana2007__ILO1-1_Hoy2024.csv"))
+
+table_results <- data.frame(
+  Outcome = c("True", "Misclassified"),
+  Mean = c(
+    round(mean(ROC_results$ROC_true),3), 
+    round(mean(ROC_results$ROC_misclassified),3)
+    ),
+  Median = c(
+    round(median(ROC_results$ROC_true),3), 
+    round(median(ROC_results$ROC_misclassified),3)
+    ),
+  Q1 = c(
+    round(quantile(ROC_results$ROC_true,0.25),3), 
+    round(quantile(ROC_results$ROC_misclassified,0.25),3)
+    ),
+  Q3 = c(
+    round(quantile(ROC_results$ROC_true,0.75),3), 
+    round(quantile(ROC_results$ROC_misclassified,0.75),3)
+    ),
+  Min = c(
+    round(min(ROC_results$ROC_true),3), 
+    round(min(ROC_results$ROC_misclassified),3)
+    ),
+  Max = c(
+    round(max(ROC_results$ROC_true),3), 
+    round(max(ROC_results$ROC_misclassified),3)
+    )  
+)
+
+table_results %>% gt
+```
+
+```{r}
+bias_absolute <- table_results$Mean[1] - table_results$Mean[2]
+
+cat("Absolute difference in AUC:", bias_absolute, "\n") 
 ```
 
 \pagebreak
 
-# Package References
-
-```{r}
-#| include: false
-report::cite_packages(session)
-```
-
-\pagebreak
 
 # References
 
 ```{r}
 #| include: false
 
-# Run this chunk if you wish to clear your environment and unload packages.
-
-pacman::p_unload(negate = TRUE)
-
+# Run this chunk if you wish to clear your environment.
 rm(list = ls())
 ```

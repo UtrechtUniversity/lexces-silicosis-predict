@@ -46,13 +46,11 @@ B6 <- 0.916 # Standardized residual FEV1 <-1.0
 # Misclassification parameters from recent study in artificial stone benchtop
 # industry workers https://onlinelibrary.wiley.com/doi/10.1111/resp.14755
 g0 <- 0.0286  #gamma0 (false-positive rate)
-g1 <- 0.4828  # gamma1 (true-positive rate)
+g1 <- 0.575  # gamma1 (true-positive rate)
 
 # Initialize vectors to store results
 ROC_true_results <- vector(length = num_repetitions)
 ROC_misclassified_results <- vector(length = num_repetitions)
-ROC_adjusted_results <- vector(length = num_repetitions)
-
 
 #### Simulation of data and AUC estimates for every new sample ####
 
@@ -81,19 +79,20 @@ for (i in 1:num_repetitions) {
   mis.beta <- glm(Y ~ X1 + X2 + X3 + X4 + X5 + X6, family="binomial")$coef
   mis.pred <- logit.pred(mis.beta, cbind(X1, X2, X3, X4, X5, X6))
   ROC_misclassified_results[i] <- mis_ROC(Y, mis.pred, 0, 0)$auc
-  
-  # Misclassification-Adjusted ROC
-  cor.beta <- Misclassify_logistic_IWLS(
-    cbind(X1, X2, X3, X4, X5, X6), Y, g0, g1, maxIter=300)$coefficients
-  cor.pred <- logit.pred(cor.beta, cbind(X1, X2, X3, X4, X5, X6))
-  ROC_adjusted_results[i] <- mis_ROC(Y, cor.pred, g0, g1)$auc
 }
 
 #### Results ####
 
-# Mean estimates
-mean_ROC_true <- mean(ROC_true_results)
-mean_ROC_misclassified <- mean(ROC_misclassified_results)
-mean_ROC_adjusted <- mean(ROC_adjusted_results)
+# Save table 
+ROC_results <- data.frame(
+  ROC_true = ROC_true_results,
+  ROC_misclassified = ROC_misclassified_results
+)
+
+write.csv(
+  ROC_results, 
+  file = paste0(tabfolder, "/ROC_results_ILO1-1_Suarthana2007__ILO1-1_Hoy2024.csv"),
+  row.names = F
+  )
 
 #### END ####
