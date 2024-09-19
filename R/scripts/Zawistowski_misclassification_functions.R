@@ -50,6 +50,27 @@ misclassify <- function(v,gamma0,gamma1) {
   return(miss_v)
 }
 
+# Reverse misclassification function.
+# Adaptation (Javier Mancilla-Galindo) of the 'misclassify' function, to 
+# use reverse misclassification parameters instead of gamma0 and gamma1: 
+misclassify_reverse <- function(v, rev_g0, rev_g1) {
+  miss_v = rep(-9, length(v))
+  for(i in 1:length(v)) {
+    new_v = v[i]
+    if(v[i] == 1) {  # If the CXR result is positive (1)
+      # Misclassify based on the probability of HRCT+ given CXR+
+      if(runif(1) > rev_g0) { new_v = 0 }  # Misclassify to HRCT-
+    } else {  # If the CXR result is negative (0)
+      # Misclassify based on the probability of HRCT- given CXR-
+      if(runif(1) > rev_g1) { new_v = 1 }  # Misclassify to HRCT+
+    }
+    miss_v[i] = new_v  # 
+  }
+  
+  return(miss_v)
+}
+
+
 # this expects the data columns and the betas to be in the same order, 
 # following the intercept beta
 predict <- function(data, beta_v) {

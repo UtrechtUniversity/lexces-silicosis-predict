@@ -3,7 +3,7 @@ title: "Silicosis Diagnostic Rule"
 subtitle: "Description of diagnostic rule and impact of misclassification error"
 author: 
   - "Javier Mancilla Galindo, junior researcher"
-  - "Dr. Susan Peters, Supervisor"
+  - "Dr. Susan Peters, supervisor"
 date: today
 execute: 
   echo: false
@@ -23,10 +23,24 @@ editor: source
 
 \pagebreak
 
-# Setup
+# Summary
+
+**Introduction**: A diagnostic prediction model to rule out pneumoconiosis in Dutch construction workers was developed and published in 2007. The diagnostic rule identifies workers at high risk of pneumoconiosis who are referred for medical examination and diagnostic imaging with chest X-ray (CXR). Recently, concerns have been raised about the poor diagnostic performance of CXR compared to HRCT for the diagnosis of silicosis, especially for detecting early cases. With the ultimate intention of deciding if the diagnostic prediction rule should be incorporated into a health surveillance program for silicosis, this work provides an overview of the diagnostic prediction rule and estimates the extent, impact, and implications of outcome misclassification from its use.
+
+**Methods**: A
+
+**Results**: A
+
+**Discussion**: A
+
+**Conclusion and recommendations**: A
+
+\pagebreak
 
 ```{r}
 #| include: false  
+
+# Setup 
 
 # Create directories for sub-folders  
 inputfolder <- "../data/raw"
@@ -42,10 +56,10 @@ dir.create(figfolder, showWarnings = FALSE)
 dir.create(tabfolder, showWarnings = FALSE)
 ```
 
-## Packages used
-
 ```{r}
-#| echo: true 
+#| include: false  
+
+# Packages used 
 
 if (!require("pacman", quietly = TRUE)) {
   install.packages("pacman")
@@ -57,8 +71,6 @@ pacman::p_load(
   report      # Used to cite packages used in this session.   
 )
 ```
-
-\pagebreak
 
 ## Session and package dependencies
 
@@ -83,13 +95,15 @@ session
 
 # Description
 
-A diagnostic prediction model to **rule out** pneumoconiosis in construction workers was developed and published in 2007.[@Suarthana2007] The study population consisted of Dutch natural stone and construction workers age 30 years and older. 
+A diagnostic prediction model to **rule out** pneumoconiosis in construction workers was developed and published in 2007.[@Suarthana2007] The study population consisted of Dutch natural stone construction workers age 30 years and older. Lexces partners are currently designing a health surveillance program (HSP) for respiratory occupational diseases, including silicosis. The diagnostic prediction rule could be incorporated into the HSP to determine which workers exposed to silica dust should undergo further diagnostic workup for silicosis. However, concerns have been raised about the prediction rule not detecting early cases of silicosis. Thus, the objective of this work is to provide an overview of the diagnostic prediction rule and to estimate the extent, impact, and implications of outcome misclassification with its use.
 
 ## Outcome
 
-The diagnosis of pneumoconiosis was defined as a chest x ray (CXR) indicative for pneumoconiosis (ILO profusion category ≥1/1), for which the ILO international classification of radiographs of pneumoconioses 2000 version was used. The most up-to-date version of this guideline is the 2022 revised edition.[@ILO2022] The ILO score is assigned upon examination of small opacities on CXR, in comparison to standardized CXR images, and is composed of a major category, which is followed by a subcategory. For instance, a score of 1/0 means that 1 was assigned as the major category, while 0 was strongly considered as the alternative. Conversely, a score of 0/1 means that the radiologist assigned 0 as the major category, but strongly considered 0 as suitable. A score 1/1 means that the CXR is consistent with the standardized CXR graded as 1.
+To develop the prediction rule, the diagnosis of pneumoconiosis was defined as a chest x ray (CXR) indicative of pneumoconiosis (ILO profusion category ≥1/1), for which the ILO international classification of radiographs of pneumoconioses 2000 version was used. The most up-to-date version of this guideline is the 2022 revised edition.[@ILO2022] The ILO score is assigned upon examination of small opacities on CXR, in comparison to standardized CXR images. The range of possible values are integers between 0 and 3, which are assigned to a major category, followed by a subcategory (see [**Box 1**] for a simple example). For instance, a score of 1/0 means that 1 was assigned as the major category, while 0 (subcategory) was strongly considered as the alternative. Conversely, a score of 0/1 means that the radiologist assigned 0 as the major category, but strongly considered 1 as suitable. A score 1/1 means that the CXR is consistent with the standard CXR graded as 1 in the ILO classification report.
 
-As mentioned earlier, an ILO score ≥1/1 was considered as the reference standard for pneumoconiosis to develop the prediction rule. This contrasts with standard recommendations at the time mentioning that an ILO category 1/0 or higher should be considered consistent with the presence of pneumoconiosis.[@Wagner1996] This decision was made under the rationale that a 1/0 cutoff would lead to greater misclassification. Furthermore, three different radiologists provided a score and the median score was used. Out of the 1291 workers included for analysis, a total of 37 (2.9%) had a score ≥1/1, whereas 131 (10.1%) were graded ≥1/0.
+As mentioned earlier, an ILO score **≥1/1** was considered as the reference standard for pneumoconiosis to develop the diagnostic prediction rule.[@Suarthana2007] This contrasts with standard recommendations at the time mentioning that an ILO category **1/0** or higher should be considered consistent with the presence of pneumoconiosis.[@Wagner1996] This decision was made under the rationale that a 1/0 cutoff could lead to greater misclassification, resulting in more unnecessary chest x-rays. Out of the 1291 workers included for analysis, a total of 37 (2.9%) had a score ≥1/1, whereas 131 (10.1%) were graded ≥1/0.
+
+Noteworthy, three different radiologists examined the CXR and provided a score. Radiologists were **blinded** to patient characteristics, except for the fact that all participants worked on the construction industry. The median score was used for analysis.
 
 ## Predictors
 
@@ -103,20 +117,27 @@ Lung function measured with a pneumotacometer on the same day of CXR obtention a
 -   Cumulative exposure to silica index
 -   Standardized residual FEV1
 
-Continuous variables were dichotomized and modeled both as continuous and binary. Since there were no differences in the AUC of a prediction model with continuous vs binary predictores, the latter was kept for simplicity.
+Continuous variables were dichotomized and modeled separately, as continuous and binary. Since there were no differences in the AUC of a prediction model with continuous vs binary predictors, the latter were kept to simplify the diagnostic rule usage.
 
 The final model included five predictors:
 
-| Predictor                              | Value                   | Score | Beta |
-|-----------------------|-----------------|-----------------|-----------------|
-| Age                                    | ≥40 years               | 1.0   | 0.72 |
-| Smoking habit                          | Current smoker          | 1.0   | 0.70 |
-| Job title                              | High exposure job title | 1.5   | 1.14 |
-| Work duration in construction industry | ≥15 years               | 1.5   | 1.00 |
-| Self-related health                    | Feeling unhealthy       | 1.25  | 0.84 |
-| Standardized residual FEV1             | ≤ -1.0                  | 1.25  | 0.91 |
++----------------------------------------+-------------------------+-------------+-------------+
+| Predictor                              | Value                   | Score       | Beta        |
++========================================+=========================+=============+=============+
+| Age                                    | ≥40 years               | 1.0         | 0.72        |
++----------------------------------------+-------------------------+-------------+-------------+
+| Smoking habit                          | Current smoker          | 1.0         | 0.70        |
++----------------------------------------+-------------------------+-------------+-------------+
+| Job title                              | High exposure job title | 1.5         | 1.14        |
++----------------------------------------+-------------------------+-------------+-------------+
+| Work duration in construction industry | ≥15 years               | 1.5         | 1.00        |
++----------------------------------------+-------------------------+-------------+-------------+
+| Self-related health                    | Feeling unhealthy       | 1.25        | 0.84        |
++----------------------------------------+-------------------------+-------------+-------------+
+| Standardized residual FEV1             | ≤ -1.0                  | 1.25        | 0.91        |
++----------------------------------------+-------------------------+-------------+-------------+
 
-## Diagnostic accuracy
+## Area under the curve of the prediction rule
 
 The uncorrected AUC of the model was 0.81 (95%CI: 0.75 to 0.86). The corrected AUC was 0.76. A cutoff point of 3.75 is suggested as optimal, with the following classification measures:
 
@@ -133,7 +154,27 @@ The uncorrected AUC of the model was 0.81 (95%CI: 0.75 to 0.86). The corrected A
 
 \pagebreak
 
-# Misclassification error of CXR
+## Model Validation
+
+In the original Suarthana study,[@Suarthana2007] the prediction model was only internally validated. A formal external validation procedure was not performed as currently recommended in TRIPOD+AI guidelines.[@Collins2024]
+
+To scope for studies reporting the use of the diagnostic prediction rule and any posterior external validation studies, the citations of the diagnostic rule development model were [retreived from Google Scholar](https://scholar.google.com/scholar?cites=1797392544233043996&as_sdt=2005&sciodt=0,5&hl=es&inst=7240083048524121927) on 10/09/2024 and screened for title and abstract. Google Scholar was chosen due to its wide coverage of literature sources. A total of **59** records citing the paper were found. In comparison, other databases retrieved less results: PubMed-MEDLINE (n = 11), Web of Science (n = 22), Scopus (n = 32), semantic scholar (n = 34), and dimensions (n = 26). All documents were reviewed, including those in other languages, for which automatic translations were obtained to screen for any calculations of the probability of silicosis according to the diagnostic prediction rule. Out of **59** records citing the paper, **5 studies**[@Nicol2015; @Meijer2011; @Mets2012; @Stigter2011; @Rooijackers2016] reported having used the diagnostic prediction rule to calculate workers' risk of pneumoconiosis. These studies are summarized in the following subheadings:
+
+### Nicol, et al.[@Nicol2015]
+
+In a case series of 6 young stonemasons from the UK who were diagnosed with silicosis after performing a high-resolution computed tomography (HRCT) (three of them with progressive massive fibrosis), the diagnostic rule was applied and all 6 cases had a probability of having silicosis of 0%.[@Nicol2015] All these 6 cases would have not been referred for further chest x-ray investigation based solely on the diagnostic prediction rule score.
+
+### Meijer, et al.[@Meijer2011]
+
+A subset of 180 participants enrolled in the study used for the development of the diagnostic prediction rule were invited for further examination with chest HRCT, of which a total of **n=79** ultimately underwent HRCT.[@Meijer2011] Participants invited were intended to be representative of the different risk score categories of the diagnostic prediction rule. A definite diagnosis of silicosis was not made. The study reports HRCT findings for different ILO thresholds (0/0, 1/0, and ≥1/1), agreement between individual HRCT features between radiologists, and associations between the cumulative exposure index to silica and HRCT findings, controlling for smoking.
+
+In participants with a normal CXR (ILO 0/0), only 34.9% had a normal HRCT. In these patients, findings suggestive of silicosis such as well-defined round opacities (8%) and parietal pleural abnormalities (24%) were frequent on HRCT. Emphysema was also frequent (41%), as well as irregular and/or linear opacities (22%).
+
+### 
+
+\pagebreak
+
+# Misclassification error of chest X-Ray
 
 ## CXR based on Meijer, et al.[@Meijer2011]
 
@@ -143,11 +184,11 @@ A subset of 180 participants enrolled in the study used for the development of t
 
 A recent study has estimated misclassification error of CXR using ILO categories against HRCT as the reference standard.[@Hoy2024] Using the standardized cut-off of 1/0, CXR diagnostic performance against HRCT was as follows:
 
-|       | HRCT + | HRCT - |      |
-|-------|--------|--------|------|
-| CXR + | 25     | 2      | 27   |
-| CXR - | 15     | 68     | 83   |
-|       | 40     | 70     | 110  |
+|       | HRCT + | HRCT - |     |
+|-------|--------|--------|-----|
+| CXR + | 25     | 2      | 27  |
+| CXR - | 15     | 68     | 83  |
+|       | 40     | 70     | 110 |
 
 ```{r}
 TP <- 25 # True positives
@@ -158,6 +199,7 @@ FN <- 15 # False negatives
 Sn <- TP/(TP+FN)
 Sp <- TN/(FP+TN)
 FPR <- 1-Sp
+FNR <- 1-Sn
 PPV <- TP/(TP+FP)
 NPV <- TN/(FN+TN)
 LRpos <- Sn/(1-Sp)
@@ -168,6 +210,7 @@ DOR <- (TP*TN)/(FP*FN)
 cat("Sensitivity (%):", round((Sn*100),1), "\n")
 cat("Specificity (%):", round((Sp*100),1), "\n")
 cat("False Positive Rate (%):", round((FPR*100),1), "\n")
+cat("False Negative Rate (%):", round((FNR*100),1), "\n")
 cat("Positive Predictive Value; (%):", round((PPV*100),1), "\n")
 cat("Negative Predictive Value; (%):", round((NPV*100),1), "\n")
 cat("Likelihood Ratio (+):", round(LRpos,2), "\n")
@@ -178,13 +221,13 @@ cat("Diagnostic Odds Ratio:", round(DOR,2), "\n")
 
 ## CXR based on ILO 1/1 cut-off from Hoy, et al.[@Hoy2024]
 
-Using the summary data reported by Hoy, et al.[@Hoy2024] for different ILO scores, a 2x2 table can be recreated for the 1/1 ILO threshold: 
+Using the summary data reported by Hoy, et al.[@Hoy2024] for different ILO scores, a 2x2 table can be recreated for the 1/1 ILO threshold:
 
-|       | HRCT + | HRCT - |      |
-|-------|--------|--------|------|
-| CXR + | 23     | 2      | 27   |
-| CXR - | 17     | 68     | 83   |
-|       | 40     | 70     | 110  |
+|       | HRCT + | HRCT - |     |
+|-------|--------|--------|-----|
+| CXR + | 23     | 2      | 27  |
+| CXR - | 17     | 68     | 83  |
+|       | 40     | 70     | 110 |
 
 ```{r}
 TP <- 23 # True positives
@@ -195,6 +238,7 @@ FN <- 17 # False negatives
 Sn <- TP/(TP+FN)
 Sp <- TN/(FP+TN)
 FPR <- 1-Sp
+FNR <- 1-Sn
 PPV <- TP/(TP+FP)
 NPV <- TN/(FN+TN)
 LRpos <- Sn/(1-Sp)
@@ -205,6 +249,7 @@ DOR <- (TP*TN)/(FP*FN)
 cat("Sensitivity (%):", round((Sn*100),1), "\n")
 cat("Specificity (%):", round((Sp*100),1), "\n")
 cat("False Positive Rate (%):", round((FPR*100),1), "\n")
+cat("False Negative Rate (%):", round((FNR*100),1), "\n")
 cat("Positive Predictive Value; (%):", round((PPV*100),1), "\n")
 cat("Negative Predictive Value; (%):", round((NPV*100),1), "\n")
 cat("Likelihood Ratio (+):", round(LRpos,2), "\n")
@@ -217,56 +262,90 @@ cat("Diagnostic Odds Ratio:", round(DOR,2), "\n")
 
 # Accounting for misclassification error
 
-Corrected ROC curve analysis of prediction models can be done by taking into account misclassification error for binary outcomes, provided that disease prevalence and misclassification rates are known.[@Zawistowski2017]
+Corrected ROC curve analysis of prediction models can be done by taking into account misclassification error for binary outcomes, provided that disease prevalence and misclassification rates are known.[@Zawistowski2017] Zawistowski, et al. simulate the value of the true outcome and then introduce different misclassification rates to understand the impact of misclassification on the prediction models' AUC.
 
+In the case of the diagnostic prediction rule, we do not know the value of the true outcome, which would have been determined with HRCT. Instead, the diagnostic prediction rule used CXR as the reference test, which means that only the value of the misclassified outcome is know. Zawistowski's[@Zawistowski2017] procedure can be adapted to obtain the reverse-misclassified outcome instead, by using the information from Hoy, et al.[@Hoy2024], which would allow to estimate what the diagnostic rule AUC would have been had HRCT been used instead of CXR. The original functions, as well as the adapted reverse-misclassification function are found in the following script which is sourced into this document:
 
 ```{r}
 #| echo: true
 source("scripts/Zawistowski_misclassification_functions.R")
 ```
 
+Instead of parameters `gamma0` (false-positive rate) and `gamma1` (true-positive rate), the `misclassify_reverse` function uses parameters `rev_g0` (probability of HRCT+ given CXR+) and `rev_g1` (probability of HRCT- given CXR-). From Bayes' theorem:
+
+#### Probability of HRCT+ given CXR+ (`rev_g0`)
+
+$$
+P(\text{HRCT+} \mid \text{CXR+}) = \frac{ \text{Sensitivity} \times P(\text{HRCT+}) }{ P(\text{CXR+}) }
+$$
+
+```{r}
+# Using 2x2 table from ILO 1/1 cut-off (Hoy 2024)
+p_HRCT_positive <- 40/110   # HRCT+ out of total sample 
+p_CXR_positive <- 27/110  # CXR+ out of total sample 
+## Sensitivity (Sn) already calculated and saved in global environment
+
+# P(HRCT+ | CXR+)
+rev_g0 <- (Sn * p_HRCT_positive) / p_CXR_positive
+
+cat("P(HRCT+ | CXR+) =", round(rev_g0,5), "\n")
+```
+
+#### Probability of HRCT- given CXR- (`rev_g1`)
+
+$$
+P(\text{HRCT-} \mid \text{CXR-}) = \frac{ \text{Specificity} \times P(\text{HRCT-}) }{ P(\text{CXR-}) }
+$$
+
+```{r}
+# Using 2x2 table from ILO 1/1 cut-off (Hoy 2024)
+p_HRCT_negative <- 70/110   # HRCT- out of total sample 
+p_CXR_negative <- 83/110  # CXR- out of total sample 
+## Specificity (Sp) already calculated and saved in global environment
+
+# P(HRCT- | CXR-)
+rev_g1 <- (Sp * p_HRCT_negative) / p_CXR_negative
+
+cat("P(HRCT- | CXR-) =", round(rev_g1,5), "\n")
+```
+
+Note that these simulations assume that outcome misclassification is non-differential.
+
 ```{r}
 #| echo: true
-#| eval: false
+#| eval: true
 source("scripts/Diagnostic_rule_AUC_misclassification.R")
 ```
 
-## Results 
-
-### Main prediction model (ILO 1/1),[@Suarthana2007] misclassification based on ILO 1/0 by Hoy, et al.[@Hoy2024]
+## Results
 
 ```{r}
-ROC_results <- read.csv(paste0(tabfolder,"/ROC_results_ILO1-1_Suarthana2007__ILO1-1_Hoy2024.csv"))
+ROC_results <- read.csv(file.path(tabfolder, "ROC_results_ILO1-1_Suarthana2007__ILO1-1_Hoy2024_reverse.csv"))
+
+columns <- c(
+  "ROC_observed_outcome", 
+  "ROC_observed_corrected", 
+  "ROC_reverse_misclassified"
+  )
+
+# Summary statistics 
+summary_stats <- function(column) {
+  c(
+    Mean = round(mean(ROC_results[[column]]), 3),
+    Median = round(median(ROC_results[[column]]), 3),
+    Q1 = round(quantile(ROC_results[[column]], 0.25), 3),
+    Q3 = round(quantile(ROC_results[[column]], 0.75), 3),
+    Min = round(min(ROC_results[[column]]), 3),
+    Max = round(max(ROC_results[[column]]), 3)
+  )
+}
 
 table_results <- data.frame(
-  Outcome = c("True", "Misclassified"),
-  Mean = c(
-    round(mean(ROC_results$ROC_true),3), 
-    round(mean(ROC_results$ROC_misclassified),3)
-    ),
-  Median = c(
-    round(median(ROC_results$ROC_true),3), 
-    round(median(ROC_results$ROC_misclassified),3)
-    ),
-  Q1 = c(
-    round(quantile(ROC_results$ROC_true,0.25),3), 
-    round(quantile(ROC_results$ROC_misclassified,0.25),3)
-    ),
-  Q3 = c(
-    round(quantile(ROC_results$ROC_true,0.75),3), 
-    round(quantile(ROC_results$ROC_misclassified,0.75),3)
-    ),
-  Min = c(
-    round(min(ROC_results$ROC_true),3), 
-    round(min(ROC_results$ROC_misclassified),3)
-    ),
-  Max = c(
-    round(max(ROC_results$ROC_true),3), 
-    round(max(ROC_results$ROC_misclassified),3)
-    )  
+  Outcome = c("CXR", "CXR-corrected", "HRCT"),
+  t(sapply(columns, summary_stats))
 )
 
-table_results %>% gt
+table_results %>% gt()
 ```
 
 ```{r}
@@ -277,6 +356,33 @@ cat("Absolute difference in AUC:", bias_absolute, "\n")
 
 \pagebreak
 
+# Extended Data
+
+#### Box 1
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Box 1. Understanding the ILO chest X-ray classification scheme                                                                                                                                                                                                                                                                                                            |
++===========================================================================================================================================================================================================================================================================================================================================================================+
+| The ILO CXR classification scheme may be unintuitive at first. An analogy can be made with a daily life situation to simplify its understanding. Suppose that a radiologist goes to the supermarket to buy chocolate. The radiologist finds 4 options on the shelve:                                                                                                      |
+|                                                                                                                                                                                                                                                                                                                                                                           |
+| -   Sweet chocolate (30% cocoa) = **ILO 0**                                                                                                                                                                                                                                                                                                                               |
+|                                                                                                                                                                                                                                                                                                                                                                           |
+| -   Semi-sweet chocolate (50% cocoa) = **ILO 1**                                                                                                                                                                                                                                                                                                                          |
+|                                                                                                                                                                                                                                                                                                                                                                           |
+| -   Semi-dark chocolate (70% cocoa) = **ILO 2**                                                                                                                                                                                                                                                                                                                           |
+|                                                                                                                                                                                                                                                                                                                                                                           |
+| -   Dark chocolate (95% cocoa) = **ILO 3**                                                                                                                                                                                                                                                                                                                                |
+|                                                                                                                                                                                                                                                                                                                                                                           |
+| Radiologist number 1 (R1) has a hard time deciding between 30% (ILO 0) and 50% (ILO 1) cocoa, but does not even consider buying a 70% (ILO 2) or 95% (ILO 3) cocoa bar. In the end, R1 picks the 50% cocoa bar. Thus, the final score is **1/0** because they payed for semi-sweet chocolate (ILO 1), but strongly considered sweet chocolate (ILO 0) as the alternative. |
+|                                                                                                                                                                                                                                                                                                                                                                           |
+| On the contrary, radiologist number 2 (R2) is convinced that semi-sweet chocolate (ILO 1) is the right choice as soon as they see the shelve and does not even consider other options. Thus, the final score for R2 is **1/1**.                                                                                                                                           |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+\pagebreak
+
+#### Other
+
+\pagebreak
 
 # References
 

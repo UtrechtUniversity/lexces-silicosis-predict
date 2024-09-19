@@ -7,7 +7,11 @@
 ## Purpose: This script follows the procedure described by Zawitowski, et al. 
 ## https://onlinelibrary.wiley.com/doi/10.1002/sim.7260 to estimate the impact 
 ## of outcome misclassification in a pneumoconiosis diagnostic prediction rule
-## https://oem.bmj.com/lookup/doi/10.1136/oem.2006.027904. Available code 
+## https://oem.bmj.com/lookup/doi/10.1136/oem.2006.027904. However, the original
+## paper estimates misclassification based on the TRUE outcome. Since the 
+## diagnostic rule paper used a misclassified outcome (chest X-ray), I want to
+## obtain the reverse misclassification (what is the probability of silicosis)
+## if HRCT (reference test) had been used instead of CXR. For that, the code
 ## in Zawitowski's paper was adapted to simulate data compatible with the 
 ## summary sample data and prediction model equation in the OEM paper.
 ## A total of 5000 iterations are made to obtain stable mean AUC estimates. 
@@ -46,11 +50,19 @@ B6 <- 0.916 # Standardized residual FEV1 <-1.0
 # Misclassification parameters from recent study in artificial stone benchtop
 # industry workers https://onlinelibrary.wiley.com/doi/10.1111/resp.14755
 g0 <- 0.0286  #gamma0 (false-positive rate)
-g1 <- 0.575  # gamma1 (true-positive rate)
+g1 <- 0.425  # gamma1 (false-negative rate)
+
+# Reverse misclassification parameters 
+## Reverse misclassification parameters, calculated from data from a 
+## recent study in artificial stone benchtop industry workers. Calculation 
+## of these is found in the main Silicosis_diagnostic_rule.qmd file. 
+rev_g0 <- 0.85185  # P(HRCT+ | CXR+), probability of HRCT+ given CXR+
+rev_g1 <- 0.81928  # P(HRCT- | CXR-), probability of HRCT- given CXR-
 
 # Initialize vectors to store results
-ROC_true_results <- vector(length = num_repetitions)
-ROC_misclassified_results <- vector(length = num_repetitions)
+ROC_observed <- vector(length = num_repetitions)
+ROC_observed_corrected <- vector(length = num_repetitions)
+ROC_reverse_misclassified <- vector(length = num_repetitions)
 
 #### Simulation of data and AUC estimates for every new sample ####
 
@@ -63,35 +75,49 @@ for (i in 1:num_repetitions) {
   X5 <- rbinom(N, 1, prop_5) # Feeling unhealthy
   X6 <- rbinom(N, 1, prop_6) # Standardized residual FEV1 <-1.0
   
+  # Outcome probability, based on prediction rule equation: 
   p <- exp(
     B0 + B1*X1 + B2*X2 + B3*X3 + B4*X4 + B5*X5 + B6*X6) / 
     (1 + exp(B0 + B1*X1 + B2*X2 + B3*X3 + B4*X4 + B5*X5 + B6*X6)
-     )
-  T <- rbinom(N, 1, p)
-  Y <- misclassify(T, g0, g1)
+     ) 
   
-  # True Outcome Analysis
-  true.beta <- glm(T ~ X1 + X2 + X3 + X4 + X5 + X6, family="binomial")$coef
+  # Simulate observed outcome based on prediction rule probability
+  Outcome_observed <- rbinom(N, 1, p)
+  
+  # Simulate reverse-misclassified outcomes 
+  Y <- misclassify_reverse(Outcome_observed, rev_g0, rev_g1)
+  
+  # Observed Outcome 
+  true.beta <- glm(Outcome_observed ~ X1 + X2 + X3 + X4 + X5 + X6, family="binomial")$coef
   true.pred <- logit.pred(true.beta, cbind(X1, X2, X3, X4, X5, X6))
-  ROC_true_results[i] <- mis_ROC(T, true.pred, 0, 0)$auc
+  ROC_observed[i] <- mis_ROC(Outcome_observed, true.pred, 0, 0)$auc
   
-  # Misclassified Outcome
-  mis.beta <- glm(Y ~ X1 + X2 + X3 + X4 + X5 + X6, family="binomial")$coef
-  mis.pred <- logit.pred(mis.beta, cbind(X1, X2, X3, X4, X5, X6))
-  ROC_misclassified_results[i] <- mis_ROC(Y, mis.pred, 0, 0)$auc
+  # Observed Outcome - misclassification corrected 
+  ROC_observed_corrected[i] <- mis_ROC(Outcome_observed, true.pred, g0, g1)$auc
+  
+  #cor.beta = Misclassify_logistic_IWLS(
+   # cbind(X1, X2, X3, X4, X5, X6), Outcome_observed, g0, g1)$coefficients
+  #cor.pred = logit.pred(cor.beta, cbind(X1, X2, X3, X4, X5, X6))
+  #ROC_observed_corrected[i] <- mis_ROC(Outcome_observed, cor.pred, g0, g1)$auc
+  
+  # Reverse-misclassified Outcome
+  mis.rev.beta <- glm(Y ~ X1 + X2 + X3 + X4 + X5 + X6, family="binomial")$coef
+  mis.rev.pred <- logit.pred(mis.rev.beta, cbind(X1, X2, X3, X4, X5, X6))
+  ROC_reverse_misclassified[i] <- mis_ROC(Y, mis.rev.pred, 0, 0)$auc
 }
 
 #### Results ####
 
 # Save table 
 ROC_results <- data.frame(
-  ROC_true = ROC_true_results,
-  ROC_misclassified = ROC_misclassified_results
+  ROC_observed_outcome = ROC_observed,
+  ROC_observed_corrected = ROC_observed_corrected,
+  ROC_reverse_misclassified = ROC_reverse_misclassified
 )
 
 write.csv(
   ROC_results, 
-  file = paste0(tabfolder, "/ROC_results_ILO1-1_Suarthana2007__ILO1-1_Hoy2024.csv"),
+  file = paste0(tabfolder, "/ROC_results_ILO1-1_Suarthana2007__ILO1-1_Hoy2024_reverse.csv"),
   row.names = F
   )
 
