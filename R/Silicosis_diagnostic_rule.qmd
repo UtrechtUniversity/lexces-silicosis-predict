@@ -25,9 +25,9 @@ editor: source
 
 # Summary
 
-**Introduction**: A diagnostic prediction model to rule out pneumoconiosis in Dutch construction workers was developed and published in 2007. The diagnostic rule identifies workers at high risk of pneumoconiosis who are referred for medical examination and diagnostic imaging with chest X-ray (CXR). Recently, concerns have been raised about the poor diagnostic performance of CXR compared to HRCT for the diagnosis of silicosis, especially for detecting early cases. With the ultimate intention of deciding if the diagnostic prediction rule should be incorporated into a health surveillance program for silicosis, this work provides an overview of the diagnostic prediction rule and estimates the extent, impact, and implications of outcome misclassification from its use.
+**Introduction**: A diagnostic prediction model to rule out pneumoconiosis in Dutch construction workers was developed and published in 2007. The diagnostic rule identifies workers at high risk of pneumoconiosis who are referred for medical examination and diagnostic imaging with chest X-ray (CXR). Recently, concerns have been raised about the poor diagnostic performance of CXR compared to high resolution computed tomography (HRCT) for the diagnosis of silicosis, especially for detecting early cases. With the ultimate intention of deciding if the diagnostic prediction rule should be incorporated into a health surveillance program for silicosis, this work provides an overview of the diagnostic prediction rule and estimates the extent, impact, and implications of outcome misclassification from its use.
 
-**Methods**: A
+**Methods**: References citing the original diagnostic rule study were retrieved to scope for external validation studies. Data were simulated to replicate the summary characteristics and outcome probability of the original diagnostic rule development study. A total of 5000 samples were used to estimate the potential impact of outcome misclassification over the diagnostic rule's accuracy, by using recent false positive rates (FPR and FNR) of CXR (index test) compared to HRCT (reference test), to estimate the adjusted area under the curve (AUC) assuming non-differential outcome misclassification. Simulated observations were categorized into low (<5 points) and high (≥5 points) risk categories according to the pneumoconiosis diagnostic rule scoring system. The true outcome that would have been observed had HRCT been performed was obtained with a reverse-misclassification function using diagnostic performance estimates. Lastly, projections of the number of cases that could be missed are made by extrapolating to the current number of employees in the construction industry in the Netherlands. Best and worse-case scenarios are simulated by varying diagnostic performance parameters of CXR against HRCT within the uncertainty boundaries of 95% confidence intervals (95%CI). 
 
 **Results**: A
 
@@ -180,44 +180,6 @@ In participants with a normal CXR (ILO 0/0), only 34.9% had a normal HRCT. In th
 
 A subset of 180 participants enrolled in the study used for the development of the diagnostic prediction rule were invited for further examination with chest high resolution computed tomography (HRCT), of which a total of **n=79** participants underwent HRCT.[@Meijer2011] However, a final diagnosis of silicosis was not made based on HRCT and consensus by radiologists, and the study limited to report HRCT findings with their frequencies among different ILO thresholds.
 
-## CXR based on ILO 1/0 cut-off from Hoy, et al.[@Hoy2024]
-
-A recent study has estimated misclassification error of CXR using ILO categories against HRCT as the reference standard.[@Hoy2024] Using the standardized cut-off of 1/0, CXR diagnostic performance against HRCT was as follows:
-
-|       | HRCT + | HRCT - |     |
-|-------|--------|--------|-----|
-| CXR + | 25     | 2      | 27  |
-| CXR - | 15     | 68     | 83  |
-|       | 40     | 70     | 110 |
-
-```{r}
-TP <- 25 # True positives
-TN <- 68 # True negatives 
-FP <- 2  # False positives
-FN <- 15 # False negatives 
-
-Sn <- TP/(TP+FN)
-Sp <- TN/(FP+TN)
-FPR <- 1-Sp
-FNR <- 1-Sn
-PPV <- TP/(TP+FP)
-NPV <- TN/(FN+TN)
-LRpos <- Sn/(1-Sp)
-LRneg <- (1-Sn)/Sp
-Accuracy <- (TP+TN)/(TP+FP+FN+TN)
-DOR <- (TP*TN)/(FP*FN)
-
-cat("Sensitivity (%):", round((Sn*100),1), "\n")
-cat("Specificity (%):", round((Sp*100),1), "\n")
-cat("False Positive Rate (%):", round((FPR*100),1), "\n")
-cat("False Negative Rate (%):", round((FNR*100),1), "\n")
-cat("Positive Predictive Value; (%):", round((PPV*100),1), "\n")
-cat("Negative Predictive Value; (%):", round((NPV*100),1), "\n")
-cat("Likelihood Ratio (+):", round(LRpos,2), "\n")
-cat("Likelihood Ratio (-):", round(LRneg,2), "\n")
-cat("Accuracy (%):", round((Accuracy*100),1), "\n")
-cat("Diagnostic Odds Ratio:", round(DOR,2), "\n")
-```
 
 ## CXR based on ILO 1/1 cut-off from Hoy, et al.[@Hoy2024]
 
@@ -230,15 +192,25 @@ Using the summary data reported by Hoy, et al.[@Hoy2024] for different ILO score
 |       | 40     | 70     | 110 |
 
 ```{r}
+# Input values from 2x2 tables 
 TP <- 23 # True positives
 TN <- 68 # True negatives 
 FP <- 2  # False positives
 FN <- 17 # False negatives 
 
+# Calculate point estimate 
 Sn <- TP/(TP+FN)
 Sp <- TN/(FP+TN)
 FPR <- 1-Sp
 FNR <- 1-Sn
+
+# Confidence intervals
+ci_Sn <- prop.test(TP, TP+FN, conf.level = 0.95)$conf.int
+ci_Sp <- prop.test(TN, TN+FP, conf.level = 0.95)$conf.int
+ci_FPR <- 1 - ci_Sp
+ci_FNR <- 1 - ci_Sn
+
+# Additional diagnostic performance measures 
 PPV <- TP/(TP+FP)
 NPV <- TN/(FN+TN)
 LRpos <- Sn/(1-Sp)
@@ -246,10 +218,11 @@ LRneg <- (1-Sn)/Sp
 Accuracy <- (TP+TN)/(TP+FP+FN+TN)
 DOR <- (TP*TN)/(FP*FN)
 
-cat("Sensitivity (%):", round((Sn*100),1), "\n")
-cat("Specificity (%):", round((Sp*100),1), "\n")
-cat("False Positive Rate (%):", round((FPR*100),1), "\n")
-cat("False Negative Rate (%):", round((FNR*100),1), "\n")
+# Print results 
+cat("Sensitivity (%):", round((Sn*100),1), "(95%CI:", round(ci_Sn[1]*100,1), "-", round(ci_Sn[2]*100,1), ")", "\n")
+cat("Specificity (%):", round((Sp*100),1), "(95%CI:", round(ci_Sp[1]*100,1), "-", round(ci_Sp[2]*100,1), ")", "\n")
+cat("False Positive Rate (%):", round((1-Sp)*100,1), "(95%CI:", round(ci_FPR[2]*100,1), "-", round(ci_FPR[1]*100,1), ")", "\n")
+cat("False Negative Rate (%):", round((1-Sn)*100,1), "(95%CI:", round(ci_FNR[2]*100,1), "-", round(ci_FNR[1]*100,1), ")", "\n")
 cat("Positive Predictive Value; (%):", round((PPV*100),1), "\n")
 cat("Negative Predictive Value; (%):", round((NPV*100),1), "\n")
 cat("Likelihood Ratio (+):", round(LRpos,2), "\n")
@@ -271,61 +244,73 @@ In the case of the diagnostic prediction rule, we do not know the value of the t
 source("scripts/Zawistowski_misclassification_functions.R")
 ```
 
-Instead of parameters `gamma0` (false-positive rate) and `gamma1` (true-positive rate), the `misclassify_reverse` function uses parameters `rev_g0` (probability of HRCT+ given CXR+) and `rev_g1` (probability of HRCT- given CXR-). From Bayes' theorem:
-
-#### Probability of HRCT+ given CXR+ (`rev_g0`)
-
-$$
-P(\text{HRCT+} \mid \text{CXR+}) = \frac{ \text{Sensitivity} \times P(\text{HRCT+}) }{ P(\text{CXR+}) }
-$$
-
-```{r}
-# Using 2x2 table from ILO 1/1 cut-off (Hoy 2024)
-p_HRCT_positive <- 40/110   # HRCT+ out of total sample 
-p_CXR_positive <- 27/110  # CXR+ out of total sample 
-## Sensitivity (Sn) already calculated and saved in global environment
-
-# P(HRCT+ | CXR+)
-rev_g0 <- (Sn * p_HRCT_positive) / p_CXR_positive
-
-cat("P(HRCT+ | CXR+) =", round(rev_g0,5), "\n")
-```
-
-#### Probability of HRCT- given CXR- (`rev_g1`)
-
-$$
-P(\text{HRCT-} \mid \text{CXR-}) = \frac{ \text{Specificity} \times P(\text{HRCT-}) }{ P(\text{CXR-}) }
-$$
-
-```{r}
-# Using 2x2 table from ILO 1/1 cut-off (Hoy 2024)
-p_HRCT_negative <- 70/110   # HRCT- out of total sample 
-p_CXR_negative <- 83/110  # CXR- out of total sample 
-## Specificity (Sp) already calculated and saved in global environment
-
-# P(HRCT- | CXR-)
-rev_g1 <- (Sp * p_HRCT_negative) / p_CXR_negative
-
-cat("P(HRCT- | CXR-) =", round(rev_g1,5), "\n")
-```
-
-Note that these simulations assume that outcome misclassification is non-differential.
-
 ```{r}
 #| echo: true
 #| eval: true
 source("scripts/Diagnostic_rule_AUC_misclassification.R")
 ```
 
+Note that these simulations assume that outcome misclassification is non-differential.
+
 ## Results
 
-```{r}
-ROC_results <- read.csv(file.path(tabfolder, "ROC_results_ILO1-1_Suarthana2007__ILO1-1_Hoy2024_reverse.csv"))
+Simulated data with a sample size of 1300 participants is used to replicate samples with a similar size as the original diagnostic rule development study, by using the summary data reported in the paper and assigning the outcome based on the outcome probability from the diagnostic rule equation. A total of 5000 different samples are drawn to perform estimations of the potential impact of misclassification from the diagnostic prediction rule. Furthermore, scores for every fictitious participant are calculated based on the diagnostic prediction rule scoring system and a cut-off value of 5 is used to classify on high-risk () and low-risk () of silicosis, since this is the cut-off value that has been used in practice.[] 
 
+### Scenario 1: Point estimates from Hoy, et al.[@Hoy2024]
+
+In the first scenario, point estimate values derived from Hoy, et al.[@Hoy2024] are used: 
+
+-   Sensitivity (%): 57.5 
+-   Specificity (%): 97.1 
+-   False Positive Rate (%): 2.9 
+-   False Negative Rate (%): 42.5 
+
+
+ROC Curve analysis  
+```{r}
+ROC_results <- read.csv(file.path(tabfolder, "ROC_results_scenario_1.csv"))
+
+columns <- c(
+  "sum_outcome_observed",
+  "sum_outcome_true",
+  "sum_high_risk_observed",
+  "sum_low_risk_observed",
+  "sum_high_risk_true",
+  "sum_low_risk_true"
+  )
+
+# Summary statistics function 
+summary_stats <- function(column) {
+  c(
+    Mean = round(mean(ROC_results[[column]]), 3),
+    Median = round(median(ROC_results[[column]]), 3),
+    P = round(quantile(ROC_results[[column]], 0.25), 3),
+    P = round(quantile(ROC_results[[column]], 0.75), 3),
+    Min = round(min(ROC_results[[column]]), 3),
+    Max = round(max(ROC_results[[column]]), 3)
+  )
+}
+
+
+table_results <- data.frame(
+  Characteristic = c(
+    "Silicosis (CXR)","Silicosis (HRCT)","Silicosis (CXR) | high-risk",
+    "Silicosis (CXR) | low-risk","Silicosis (HRCT) | high-risk",
+    "Silicosis (HRCT) | low-risk"
+    ),
+  t(sapply(columns, summary_stats))
+) %>% 
+  select(-Mean)
+
+table_results %>% gt()
+```
+
+
+```{r}
 columns <- c(
   "ROC_observed_outcome", 
   "ROC_observed_corrected", 
-  "ROC_reverse_misclassified"
+  "ROC_true"
   )
 
 # Summary statistics 
@@ -333,8 +318,8 @@ summary_stats <- function(column) {
   c(
     Mean = round(mean(ROC_results[[column]]), 3),
     Median = round(median(ROC_results[[column]]), 3),
-    Q1 = round(quantile(ROC_results[[column]], 0.25), 3),
-    Q3 = round(quantile(ROC_results[[column]], 0.75), 3),
+    P = round(quantile(ROC_results[[column]], 0.25), 3),
+    P = round(quantile(ROC_results[[column]], 0.75), 3),
     Min = round(min(ROC_results[[column]]), 3),
     Max = round(max(ROC_results[[column]]), 3)
   )
@@ -351,8 +336,39 @@ table_results %>% gt()
 ```{r}
 bias_absolute <- table_results$Mean[1] - table_results$Mean[2]
 
-cat("Absolute difference in AUC:", bias_absolute, "\n") 
+cat("Absolute difference in AUC (CXR):", bias_absolute, "\n") 
 ```
+
+```{r}
+bias_absolute <- table_results$Mean[1] - table_results$Mean[3]
+
+cat("Absolute difference in AUC (HRCT):", bias_absolute, "\n") 
+```
+
+Risk score categories 
+```{r}
+columns <- c(
+  "sum_outcome_observed",
+  "sum_outcome_true",
+  "sum_high_risk_observed",
+  "sum_low_risk_observed",
+  "sum_high_risk_true",
+  "sum_low_risk_true"
+  )
+
+table_results <- data.frame(
+  Characteristic = c(
+    "Silicosis (CXR)","Silicosis (HRCT)","Silicosis (CXR) | high-risk",
+    "Silicosis (CXR) | low-risk","Silicosis (HRCT) | high-risk",
+    "Silicosis (HRCT) | low-risk"
+    ),
+  t(sapply(columns, summary_stats))
+) %>% 
+  select(-Mean)
+
+table_results %>% gt()
+```
+
 
 \pagebreak
 
