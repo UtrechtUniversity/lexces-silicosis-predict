@@ -30,7 +30,7 @@
 num_repetitions <- 5000
 
 # Sample size for every new simulation
-N <- 1300 # Chosen to be similar to diagnostic rule development sample size
+N <- 1291 # Chosen to be similar to diagnostic rule development sample size
 
 # Frequency distribution of predictors in original OEM paper
 prop_1 <- 690/1291 # Age > 40
@@ -53,14 +53,15 @@ B6 <- 0.916 # Standardized residual FEV1 <-1.0
 # recent study in artificial stone benchtop industry workers
 # https://onlinelibrary.wiley.com/doi/10.1111/resp.14755
 Sn <- 0.575   # Sensitivity
-Sp <- 0.9714  # Specificity
+Sp <- 0.971  # Specificity
 g0 <- 1 - Sp  # gamma0 (false-positive rate)
 g1 <- 1 - Sn  # gamma1 (false-negative rate)
 
 # Initialize vectors to store results
 ROC_observed <- vector(length = num_repetitions)
 ROC_observed_corrected <- vector(length = num_repetitions)
-ROC_true <- vector(length = num_repetitions)
+sum_low_risk <- vector(length = num_repetitions)
+sum_high_risk <- vector(length = num_repetitions)
 sum_outcome_observed <- vector(length = num_repetitions)
 sum_outcome_true <- vector(length = num_repetitions)
 sum_high_risk_observed <- vector(length = num_repetitions)
@@ -98,6 +99,8 @@ for (i in 1:num_repetitions) {
   risk_category <- ifelse(score < 5, "low_risk", "high_risk")
   
   ### Descriptives ### 
+  sum_low_risk[i] <- sum(risk_category == "low_risk")
+  sum_high_risk[i] <- sum(risk_category == "high_risk")
   sum_outcome_observed[i] <- sum(Outcome_observed==1)
   sum_outcome_true[i] <- sum(Outcome_true==1)
   sum_high_risk_observed[i] <- sum(Outcome_observed[risk_category == "high_risk"] == 1)
@@ -115,14 +118,6 @@ for (i in 1:num_repetitions) {
   
   # Observed Outcome - misclassification corrected ROC
   ROC_observed_corrected[i] <- mis_ROC(Outcome_observed, observed.pred, g0, g1)$auc
-
-  ### True outcome ROC analysis ###
-  # Calculate predicted probabilities 
-  true.beta <- glm(Outcome_true ~ X1 + X2 + X3 + X4 + X5 + X6, family="binomial")$coef
-  true.pred <- logit.pred(true.beta, cbind(X1, X2, X3, X4, X5, X6))
-  
-  # True Outcome ROC
-  ROC_true[i] <- mis_ROC(Outcome_true, true.pred, 0, 0)$auc
   
 }
 
@@ -132,7 +127,8 @@ for (i in 1:num_repetitions) {
 ROC_results <- data.frame(
   ROC_observed_outcome = ROC_observed,
   ROC_observed_corrected = ROC_observed_corrected,
-  ROC_true = ROC_true,
+  sum_low_risk = sum_low_risk,
+  sum_high_risk = sum_high_risk,
   sum_outcome_observed = sum_outcome_observed,
   sum_outcome_true = sum_outcome_true, 
   sum_high_risk_observed = sum_high_risk_observed, 
