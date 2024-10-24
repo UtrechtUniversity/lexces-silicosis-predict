@@ -2,8 +2,9 @@
 title: "Silicosis Diagnostic Rule"
 subtitle: "Description of diagnostic rule and impact of misclassification error"
 author: 
-  - "Javier Mancilla Galindo, junior researcher"
-  - "Dr. Susan Peters, supervisor"
+  - "Javier Mancilla Galindo, junior researcher" 
+  - "Dr. Lützen Portengen, supervisor      " 
+  - "Dr. Susan Peters, supervisor          "
 date: today
 execute: 
   echo: false
@@ -25,13 +26,13 @@ editor: source
 
 # Summary
 
-**Introduction**: A diagnostic prediction model to rule out pneumoconiosis in Dutch construction workers was developed and published in 2007. The diagnostic rule identifies workers at high risk of pneumoconiosis who are referred for medical examination and diagnostic imaging with chest X-ray (CXR). Recently, concerns have been raised about the poor diagnostic performance of CXR compared to high resolution computed tomography (HRCT) for the diagnosis of silicosis, especially for detecting early cases. With the ultimate intention of recommending whether the diagnostic prediction rule should be incorporated into a health surveillance program for silicosis, this work provides an overview of the diagnostic prediction rule and estimates the extent, impact, and implications of outcome misclassification from its use.
+**Introduction**: A diagnostic prediction model was developed to rule out pneumoconiosis in Dutch construction workers (surveyed in 1998) and published in 2007. The diagnostic rule identifies workers at high risk of pneumoconiosis who are referred for medical examination and diagnostic imaging with chest X-ray (CXR). Recently, concerns have been raised about the poor diagnostic performance of CXR compared to high resolution computed tomography (HRCT) for the diagnosis of silicosis, especially for detecting early cases. With the ultimate intention of recommending whether the diagnostic prediction rule should be incorporated into a health surveillance program for silicosis, this work provides an overview of the diagnostic prediction rule and estimates the extent, impact, and potential implications of outcome misclassification from its use.
 
-**Methods**: Data were simulated to replicate the summary characteristics and outcome probability of the original diagnostic rule development study. A total of 5000 samples were used to estimate the potential impact of outcome misclassification over the diagnostic rule's accuracy, by using recent false positive and negative rates (FPR and FNR) of CXR (index test) compared to HRCT (reference test), to estimate the adjusted area under the curve (AUC) assuming non-differential outcome misclassification. Simulated observations were categorized into low (\<5 points) and high (>=5 points) risk categories according to the pneumoconiosis diagnostic rule scoring system. The true outcome that would have been observed had HRCT been performed was obtained with a reverse-misclassification function using diagnostic performance estimates. Best and worse-case scenarios are simulated by varying diagnostic performance parameters of CXR against HRCT within the uncertainty boundaries of 95% confidence intervals (95%CI).
+**Methods**: Data were simulated to replicate the summary characteristics and outcome probability of the original diagnostic rule development study. A total of 5000 samples were used to estimate the potential impact of outcome misclassification over the diagnostic rule's accuracy, by using combinations of false positive and negative rates (FPR and FNR) of CXR (index test) compared to HRCT (reference test), to estimate the adjusted area under the curve (AUC) assuming non-differential outcome misclassification. Simulated observations were categorized into low (\<5 points) and high (>=5 points) risk categories according to the pneumoconiosis diagnostic rule scoring system. The true outcome that could have been observed had HRCT been performed was obtained with a reverse-misclassification function using diagnostic performance estimates. Two scenarios are presented by using possible combinations of sensitivity and specificity diagnostic performance parameters of CXR against HRCT within the uncertainty boundaries of their 95% confidence intervals (95%CI) and a negative inverse correlation between them of -0.7 and -0.8.
 
-**Results**: Incorporation of new knowledge of the diagnostic performance of CXR against HRCT, assuming that outcome misclassification is non-differential, reveals that the AUC of the diagnostic prediction rule is underestimated when using CXR (absolute difference: 0.022 to 0.044). Using a cut-off score of 5 points results in 17.35% (224 out of 1291) of workers identified as being in the high-risk category. In all scenarios, CXR results in an overall prevalence of silicosis of 2.8% (n=36/1291), whereas screening participants in the high-risk category only results in 17 positive ILO >=1/1 cases, and an overall prevalence by CXR in the high-risk group of 7.6% (n=17/225) and 1.8% in the low-risk group (n=19/1057). In simulations incorporating point estimates for sensitivity and specificity (scenario 1), the true prevalence of silicosis with HRCT is 4.4% (n=57), of which 16 are in the high-risk category, resulting in a prevalence of 7.1% in the high-risk and 3.8% (n=41) in the low-risk group. Using the upper bound of the 95%CI of specificity and sensitivity (scenario 2), the true prevalence of silicosis with HRCT is 2.5% (n=32), of which 14 are in the high-risk group (prevalence in the high-risk group = 6.3%) and 19, low-risk (prevalence in the low-risk group = 1.8%). Lastly, using the lower bound of specificity and sensitivity, the true prevalence of silicosis by HRCT is 11.7% (n=153), of which 29 are high-risk workers (prevalence in the high-risk group = 12.9%) and 122 low-risk workers (prevalence in the low-risk group = 11.5%).
+**Results**: Incorporation of uncertainties of the diagnostic performance of CXR against HRCT, assuming that outcome misclassification is non-differential, reveals that the AUC of the diagnostic prediction rule is underestimated when using CXR (absolute difference: 0.039 to 0.04). Using a cut-off score of 5 points results in 17.35% (224 out of 1291) of workers identified as being in the high-risk category. On average, outcome misclassification leads to 1 case less detected with HRCT than CXR in the high-risk group (median prevalence 7.73% vs 6.98%), whereas its impact is greater in the low-risk category, with 19 cases detected with CXR and 40-41 with HRCT (median prevalence 3.78% vs 1.76%). However, scenarios are widely variable, reflecting the uncertainties in the diagnostic performance of CXR against HRCT.
 
-**Discussion**: The diagnostic prediction rule for silicosis has been used with a higher threshold (5 points) than optimal (3.75 points in the original study), likely due to the need of minimizing the number of workers who undergo diagnostic imaging studies. Under that threshold, 17.35% of participants are identified as high risk individuals to undergo screening. Incorporating current knowledge of the diagnostic performance of CXR against HRCT reveals that there is minimal impact in the number of positive cases detected under scenarios 1 (point estimates) and 2 (best case: upper bound of 95%CI), whereas almost twice the cases in the high risk group are detected with HRCT in scenario 3 (worst case: lower bound of 95%CI). Outcome misclassification has a greater impact in workers in the low risk category in both scenarios 1 and 3, where twice and six-times the cases are detected with HRCT, respectively. Scenarios in which differential misclassification exists remain to be explored as well as those with different disease prevalence.  
+**Discussion**: The diagnostic prediction rule for silicosis has been used with a higher threshold (5 points) than optimal (3.75 points in the original study), likely due to the need of minimizing the number of workers who undergo diagnostic imaging studies. Under that threshold, 17.35% of participants are identified as high risk individuals to undergo screening. Incorporating current knowledge and uncertainties of the diagnostic performance of CXR against HRCT reveals that outcome misclassification has a greater impact in workers in the low risk category than those classified as high-risk. Scenarios in which differential misclassification exists remain to be explored as well as those with different disease prevalence or varying cut-off points.  
 
 \pagebreak
 
@@ -65,6 +66,7 @@ if (!require("pacman", quietly = TRUE)) {
 
 pacman::p_load(
   tidyverse,  # Used for basic data handling and visualization.
+  MASS,       # Used for multivariate normal distribution.
   gt,         # Used to print html tables.  
   report      # Used to cite packages used in this session.   
 )
@@ -91,7 +93,7 @@ session
 
 \pagebreak
 
-# Description
+# Background
 
 A diagnostic prediction model to **rule out** pneumoconiosis in construction workers was developed and published in 2007.[@Suarthana2007] The study population consisted of Dutch natural stone construction workers age 30 years and older. Lexces partners are currently designing a health surveillance program (HSP) for respiratory occupational diseases, including silicosis. The diagnostic prediction rule could be incorporated into the HSP to determine which workers exposed to silica dust should undergo further diagnostic workup for silicosis. However, concerns have been raised about the prediction rule not detecting early cases of silicosis. Thus, the objective of this work is to provide an overview of the diagnostic prediction rule and to estimate the extent, impact, and implications of outcome misclassification with its use.
 
@@ -259,6 +261,8 @@ cat("Diagnostic Odds Ratio:", round(DOR,2), "\n")
 
 Corrected ROC curve analysis of prediction models can be done by taking into account misclassification error for binary outcomes, provided that disease prevalence and misclassification rates are known.[@Zawistowski2017] Zawistowski, et al. simulate the value of the true outcome and then introduce different misclassification rates to understand the impact of misclassification on the prediction models' AUC.
 
+## Non-differential misclassification 
+
 In the case of the diagnostic prediction rule, we do not know the value of the true outcome, which would have been determined with HRCT. Instead, the diagnostic prediction rule used CXR as the reference test, which means that only the value of the misclassified outcome is know. Zawistowski's[@Zawistowski2017] procedure can be adapted to obtain the reverse-misclassified outcome instead, by using the information from Hoy, et al.[@Hoy2024] to estimate what the diagnostic rule AUC would have been had HRCT been used instead of CXR. The original functions, as well as the adapted reverse-misclassification function are found in the following script which is sourced into this document:
 
 ```{r}
@@ -272,27 +276,21 @@ source("scripts/Zawistowski_misclassification_functions.R")
 source("scripts/Diagnostic_rule_AUC_misclassification.R")
 ```
 
-Note that these simulations assume that outcome misclassification is non-differential.
-
-## Results
-
 Simulated data with a sample size of 1291 participants is used to replicate samples with a similar size as the original diagnostic rule development study, by using the summary data reported in the paper and assigning the outcome based on the outcome probability from the diagnostic rule equation. A total of 5000 different samples are drawn to perform estimations of the potential impact of misclassification from the diagnostic prediction rule. Furthermore, scores for every fictitious participant are calculated based on the diagnostic prediction rule scoring system and a cut-off value of 5 is used to classify on high-risk (>=5 points) and low-risk (\<5) of silicosis, since this is the cut-off value that has been used in practice.[@Stigter2011; @Rooijackers2016]
 
 \pagebreak
 
-### Scenario 1: Point estimates from Hoy, et al.[@Hoy2024]
+### Scenario 1
 
-In the first scenario, point estimate values derived from Hoy, et al.[@Hoy2024] are used:
+Sensitivity and specificity confidence intervals from Hoy, et al.[@Hoy2024] are used, simulating combinations of Sn and Sp from a bivariate normal distribution and a **correlation of -0.8** between them. 
 
--   Sensitivity (%): 57.5
--   Specificity (%): 97.1
--   False Positive Rate (%): 2.9
--   False Negative Rate (%): 42.5
+-   Sensitivity 95%CI: 41.0 - 72.6
+-   Specificity 95%CI: 89.1 - 99.5
 
 The distribution of low risk and high risk participants is as follows:
 
 ```{r}
-ROC_results <- read.csv(file.path(tabfolder, "ROC_results_scenario_1.csv"))
+ROC_results <- read.csv(file.path(tabfolder, "ROC_results_scenario_1_corr0.8.csv"))
 
 columns <- c(
   "sum_low_risk",
@@ -301,14 +299,11 @@ columns <- c(
 
 # Summary statistics function 
 summary_stats <- function(column) {
-  c(
-    Mean = round(mean(ROC_results[[column]]), 3),
-    Median = round(median(ROC_results[[column]]), 3),
+  c(Median = round(median(ROC_results[[column]]), 3),
     P = round(quantile(ROC_results[[column]], 0.25), 3),
     P = round(quantile(ROC_results[[column]], 0.75), 3),
     Min = round(min(ROC_results[[column]]), 3),
-    Max = round(max(ROC_results[[column]]), 3)
-  )
+    Max = round(max(ROC_results[[column]]), 3))
 }
 
 table_results <- data.frame(
@@ -317,8 +312,10 @@ table_results <- data.frame(
     "High (>=5 points)"
     ),
   t(sapply(columns, summary_stats))
-) %>% 
-  select(-Mean)
+) 
+
+table_results %>% gt() %>% 
+  gtsave(filename = "Risk_categories_count_corr0.8.rtf", path = tabfolder)
 
 table_results %>% gt()
 ```
@@ -342,13 +339,143 @@ table_results <- data.frame(
     "Silicosis (HRCT) | low-risk"
     ),
   t(sapply(columns, summary_stats))
-) %>% 
-  select(-Mean)
+)
+
+table_results %>% gt() %>% 
+  gtsave(filename = "Cases_count_corr0.8.rtf", path = tabfolder)
 
 table_results %>% gt()
 ```
 
-ROC curve analysis:
+##### Prevalence of silicosis in high and low risk groups
+
+```{r}
+ROC_results <- 
+  ROC_results %>% 
+  mutate(
+    prevalence_high_risk_observed = sum_high_risk_observed/sum_high_risk*100,
+    prevalence_low_risk_observed = sum_low_risk_observed/sum_low_risk*100, 
+    prevalence_high_risk_true = sum_high_risk_true/sum_high_risk*100,
+    prevalence_low_risk_true = sum_low_risk_true/sum_low_risk*100,
+    ID = 1:nrow(ROC_results)
+  )
+```
+
+```{r}
+columns <- c(
+  "prevalence_high_risk_observed",
+  "prevalence_low_risk_observed",
+  "prevalence_high_risk_true",
+  "prevalence_low_risk_true"
+  )
+
+table_results <- data.frame(
+  Characteristic = c(
+    "Prevalence (CXR) | high-risk",
+    "Prevalence (CXR) | low-risk",
+    "Prevalence (HRCT) | high-risk",
+    "Prevalence (HRCT) | low-risk"
+    ),
+  t(sapply(columns, summary_stats) %>% round(2))
+)
+
+table_results %>% gt() %>% 
+  gtsave(filename = "Prevalence_corr0.8.rtf", path = tabfolder)
+
+table_results %>% gt()
+```
+
+
+```{r}
+ROC_results_random <- ROC_results %>% 
+  mutate(ID = 1:nrow(ROC_results)) %>% 
+  sample_n(100)
+```
+
+\pagebreak
+
+High risk group 
+```{r}
+ROC_results_random %>%
+  pivot_longer(cols = c(prevalence_high_risk_observed, prevalence_high_risk_true), names_to = "Outcome", values_to = "Prevalence") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "prevalence_high_risk_observed" ~ "Silicosis (CXR) | high-risk",
+    Outcome == "prevalence_high_risk_true" ~ "Silicosis (HRCT) | high-risk"
+  ))) %>% 
+  ggplot(aes(Outcome, Prevalence, group = ID, color = ID)) +
+  geom_point() +
+  geom_line() +
+  stat_summary(fun = mean, geom = "line", lwd = 2, aes(group=1)) +
+  labs(x = "Outcome", y = "Prevalence (%)") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = c(0,25)) + 
+  coord_cartesian(expand = FALSE) +
+# Add a single data point at y = 22, when x = "Silicosis (HRCT) | high-risk" with a label "Rooijackers, et al. 2016"
+  geom_point(aes(y = 22, x = "Silicosis (HRCT) | high-risk"), color = "red") +
+  geom_text(aes(y = 22,  x = "Silicosis (HRCT) | high-risk", label = "Rooijackers, et al. 2016"), vjust = -1) +
+# Add a single data point at y = 22, when x = "Silicosis (HRCT) | high-risk" with a label "Rooijackers, et al. 2016"
+  geom_point(aes(y = 17, x = "Silicosis (HRCT) | high-risk"), color = "red") +
+  geom_text(aes(y = 17,  x = "Silicosis (HRCT) | high-risk", label = "Stigter, et al. 2011"), vjust = -1) 
+  
+# Save in figfolder with white background 
+ggsave(
+  file.path(figfolder, "prevalence_high_risk_corr0.8.png"),
+  width = 6, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
+
+Low risk group
+
+```{r}
+ROC_results_random %>%
+  pivot_longer(cols = c(prevalence_low_risk_observed, prevalence_low_risk_true), names_to = "Outcome", values_to = "Prevalence") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "prevalence_low_risk_observed" ~ "Silicosis (CXR) | low-risk",
+    Outcome == "prevalence_low_risk_true" ~ "Silicosis (HRCT) | low-risk"
+  ))) %>% 
+  ggplot(aes(Outcome, Prevalence, group = ID, color = ID)) +
+  geom_point() +
+  geom_line() +
+  stat_summary(fun = mean, geom = "line", lwd = 2, aes(group=1)) +
+  labs(x = "Outcome", y = "Prevalence (%)") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = c(0,25)) + 
+  coord_cartesian(expand = FALSE)
+  
+# Save in figfolder with white background 
+ggsave(
+  file.path(figfolder, "prevalence_low_risk_corr0.8.png"),
+  width = 6, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
+
+\pagebreak
+
+##### ROC curve analysis
 
 ```{r}
 columns <- c(
@@ -361,35 +488,79 @@ table_results <- data.frame(
   t(sapply(columns, summary_stats))
 )
 
+table_results %>% gt() %>% 
+  gtsave(filename = "Corrected_ROC_corr0.8.rtf", path = tabfolder)
+
 table_results %>% gt()
 ```
 
 ```{r}
-bias_absolute <- abs(table_results$Mean[1] - table_results$Mean[2])
+bias_absolute <- abs(table_results$Median[1] - table_results$Median[2])
 
 cat("Absolute difference in AUC (CXR-corrected):", bias_absolute, "\n") 
 ```
 
+```{r}
+ROC_results %>%
+  pivot_longer(cols = c(ROC_observed_outcome, ROC_observed_corrected), names_to = "Outcome", values_to = "AUC") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "ROC_observed_outcome" ~ "Observed",
+    Outcome == "ROC_observed_corrected" ~ "Corrected"
+  )) %>% fct_relevel(c("Observed", "Corrected"))) %>%
+  ggplot(aes(x = Outcome, y = AUC, fill = Outcome)) +
+  geom_boxplot() +
+  ylim(0.5, 1) +
+  labs(x = "Outcome", y = "AUC", caption = "Correlation Sn ~ Sp = -0.8") +
+  scale_fill_manual(values = c("Observed" = "lightblue", "Corrected" = "skyblue3")) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = 0) + 
+  coord_cartesian(expand = FALSE)
+
+ggsave(
+  file.path(figfolder, "AUC_corrected_corr0.8.png"),
+  width = 5, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
+
 \pagebreak
 
-### Scenario 2: Good diagnostic performance
+### Scenario 2
 
-For this scenario, a good diagnostic performance of CXR compared to HRCT is assumed, by using the upper boundary of 95%CI for sensitivity and specificity:
+Sensitivity and specificity confidence intervals from Hoy, et al.[@Hoy2024] are used, simulating combinations of Sn and Sp from a bivariate normal distribution and a **correlation of -0.7** between them. 
 
--   Sensitivity (%): 72.6
--   Specificity (%): 99.5
--   False Positive Rate (%): 0.5
--   False Negative Rate (%): 27.4
+-   Sensitivity 95%CI: 41.0 - 72.6
+-   Specificity 95%CI: 89.1 - 99.5
 
 The distribution of low risk and high risk participants is as follows:
 
 ```{r}
-ROC_results <- read.csv(file.path(tabfolder, "ROC_results_scenario_2.csv"))
+ROC_results <- read.csv(file.path(tabfolder, "ROC_results_scenario_1_corr0.7.csv"))
 
 columns <- c(
   "sum_low_risk",
   "sum_high_risk"
   )
+
+# Summary statistics function 
+summary_stats <- function(column) {
+  c(Median = round(median(ROC_results[[column]]), 3),
+    P = round(quantile(ROC_results[[column]], 0.25), 3),
+    P = round(quantile(ROC_results[[column]], 0.75), 3),
+    Min = round(min(ROC_results[[column]]), 3),
+    Max = round(max(ROC_results[[column]]), 3))
+}
 
 table_results <- data.frame(
   Risk = c(
@@ -397,8 +568,10 @@ table_results <- data.frame(
     "High (>=5 points)"
     ),
   t(sapply(columns, summary_stats))
-) %>% 
-  select(-Mean)
+) 
+
+table_results %>% gt() %>% 
+  gtsave(filename = "Risk_categories_count_corr0.7.rtf", path = tabfolder)
 
 table_results %>% gt()
 ```
@@ -422,93 +595,143 @@ table_results <- data.frame(
     "Silicosis (HRCT) | low-risk"
     ),
   t(sapply(columns, summary_stats))
-) %>% 
-  select(-Mean)
-
-table_results %>% gt()
-```
-
-ROC curve analysis:
-
-```{r}
-columns <- c(
-  "ROC_observed_outcome", 
-  "ROC_observed_corrected"
-  )
-
-table_results <- data.frame(
-  Outcome = c("CXR", "CXR-corrected"),
-  t(sapply(columns, summary_stats))
 )
 
+table_results %>% gt() %>% 
+  gtsave(filename = "Cases_count_corr0.7.rtf", path = tabfolder)
+
 table_results %>% gt()
 ```
 
-```{r}
-bias_absolute <- abs(table_results$Mean[1] - table_results$Mean[2])
-
-cat("Absolute difference in AUC (CXR-corrected):", bias_absolute, "\n") 
-```
-
-\pagebreak
-
-### Scenario 3: Poor diagnostic performance
-
-For this scenario, a poor diagnostic performance of CXR compared to HRCT is assumed, by using the lower boundary of 95%CI for sensitivity and specificity:
-
--   Sensitivity (%): 41
--   Specificity (%): 89.1
--   False Positive Rate (%): 10.9
--   False Negative Rate (%): 59
-
-The distribution of low risk and high risk participants is as follows:
+##### Prevalence of silicosis in high and low risk groups
 
 ```{r}
-ROC_results <- read.csv(file.path(tabfolder, "ROC_results_scenario_3.csv"))
-
-columns <- c(
-  "sum_low_risk",
-  "sum_high_risk"
+ROC_results <- 
+  ROC_results %>% 
+  mutate(
+    prevalence_high_risk_observed = sum_high_risk_observed/sum_high_risk*100,
+    prevalence_low_risk_observed = sum_low_risk_observed/sum_low_risk*100, 
+    prevalence_high_risk_true = sum_high_risk_true/sum_high_risk*100,
+    prevalence_low_risk_true = sum_low_risk_true/sum_low_risk*100,
+    ID = 1:nrow(ROC_results)
   )
-
-table_results <- data.frame(
-  Risk = c(
-    "Low (<5 points)",
-    "High (>=5 points)"
-    ),
-  t(sapply(columns, summary_stats))
-) %>% 
-  select(-Mean)
-
-table_results %>% gt()
 ```
-
-The following table shows the distribution of outcome occurrence:
 
 ```{r}
 columns <- c(
-  "sum_outcome_observed",
-  "sum_outcome_true",
-  "sum_high_risk_observed",
-  "sum_low_risk_observed",
-  "sum_high_risk_true",
-  "sum_low_risk_true"
+  "prevalence_high_risk_observed",
+  "prevalence_low_risk_observed",
+  "prevalence_high_risk_true",
+  "prevalence_low_risk_true"
   )
 
 table_results <- data.frame(
   Characteristic = c(
-    "Silicosis (CXR)","Silicosis (HRCT)","Silicosis (CXR) | high-risk",
-    "Silicosis (CXR) | low-risk","Silicosis (HRCT) | high-risk",
-    "Silicosis (HRCT) | low-risk"
+    "Prevalence (CXR) | high-risk",
+    "Prevalence (CXR) | low-risk",
+    "Prevalence (HRCT) | high-risk",
+    "Prevalence (HRCT) | low-risk"
     ),
-  t(sapply(columns, summary_stats))
-) %>% 
-  select(-Mean)
+  t(sapply(columns, summary_stats) %>% round(2))
+)
+
+table_results %>% gt() %>% 
+  gtsave(filename = "Prevalence_corr0.7.rtf", path = tabfolder)
 
 table_results %>% gt()
 ```
 
-ROC curve analysis:
+
+```{r}
+ROC_results_random <- ROC_results %>% 
+  mutate(ID = 1:nrow(ROC_results)) %>% 
+  sample_n(100)
+```
+
+\pagebreak
+
+High risk group 
+```{r}
+ROC_results_random %>%
+  pivot_longer(cols = c(prevalence_high_risk_observed, prevalence_high_risk_true), names_to = "Outcome", values_to = "Prevalence") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "prevalence_high_risk_observed" ~ "Silicosis (CXR) | high-risk",
+    Outcome == "prevalence_high_risk_true" ~ "Silicosis (HRCT) | high-risk"
+  ))) %>% 
+  ggplot(aes(Outcome, Prevalence, group = ID, color = ID)) +
+  geom_point() +
+  geom_line() +
+  stat_summary(fun = mean, geom = "line", lwd = 2, aes(group=1)) +
+  labs(x = "Outcome", y = "Prevalence (%)") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = c(0,25)) + 
+  coord_cartesian(expand = FALSE) +
+# Add a single data point at y = 22, when x = "Silicosis (HRCT) | high-risk" with a label "Rooijackers, et al. 2016"
+  geom_point(aes(y = 22, x = "Silicosis (HRCT) | high-risk"), color = "red") +
+  geom_text(aes(y = 22,  x = "Silicosis (HRCT) | high-risk", label = "Rooijackers, et al. 2016"), vjust = -1) +
+# Add a single data point at y = 22, when x = "Silicosis (HRCT) | high-risk" with a label "Rooijackers, et al. 2016"
+  geom_point(aes(y = 17, x = "Silicosis (HRCT) | high-risk"), color = "red") +
+  geom_text(aes(y = 17,  x = "Silicosis (HRCT) | high-risk", label = "Stigter, et al. 2011"), vjust = -1) 
+  
+# Save in figfolder with white background 
+ggsave(
+  file.path(figfolder, "prevalence_high_risk_corr0.7.png"),
+  width = 6, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
+
+Low risk group
+
+```{r}
+ROC_results_random %>%
+  pivot_longer(cols = c(prevalence_low_risk_observed, prevalence_low_risk_true), names_to = "Outcome", values_to = "Prevalence") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "prevalence_low_risk_observed" ~ "Silicosis (CXR) | low-risk",
+    Outcome == "prevalence_low_risk_true" ~ "Silicosis (HRCT) | low-risk"
+  ))) %>% 
+  ggplot(aes(Outcome, Prevalence, group = ID, color = ID)) +
+  geom_point() +
+  geom_line() +
+  stat_summary(fun = mean, geom = "line", lwd = 2, aes(group=1)) +
+  labs(x = "Outcome", y = "Prevalence (%)") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = c(0,25)) + 
+  coord_cartesian(expand = FALSE)
+  
+# Save in figfolder with white background 
+ggsave(
+  file.path(figfolder, "prevalence_low_risk_corr0.7.png"),
+  width = 6, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
+
+\pagebreak
+
+##### ROC curve analysis
 
 ```{r}
 columns <- c(
@@ -521,18 +744,55 @@ table_results <- data.frame(
   t(sapply(columns, summary_stats))
 )
 
+table_results %>% gt() %>% 
+  gtsave(filename = "Corrected_ROC_corr0.7.rtf", path = tabfolder)
+
 table_results %>% gt()
 ```
 
 ```{r}
-bias_absolute <- abs(table_results$Mean[1] - table_results$Mean[2])
+bias_absolute <- abs(table_results$Median[1] - table_results$Median[2])
 
 cat("Absolute difference in AUC (CXR-corrected):", bias_absolute, "\n") 
 ```
 
+```{r}
+ROC_results %>%
+  pivot_longer(cols = c(ROC_observed_outcome, ROC_observed_corrected), names_to = "Outcome", values_to = "AUC") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "ROC_observed_outcome" ~ "Observed",
+    Outcome == "ROC_observed_corrected" ~ "Corrected"
+  )) %>% fct_relevel(c("Observed", "Corrected"))) %>%
+  ggplot(aes(x = Outcome, y = AUC, fill = Outcome)) +
+  geom_boxplot() +
+  ylim(0.5, 1) +
+  labs(x = "Outcome", y = "AUC", caption = "Correlation Sn ~ Sp = -0.7") +
+  scale_fill_manual(values = c("Observed" = "lightblue", "Corrected" = "skyblue3")) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = 0) + 
+  coord_cartesian(expand = FALSE)
+
+ggsave(
+  file.path(figfolder, "AUC_corrected_corr0.7.png"),
+  width = 5, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
 \pagebreak
 
-# Differential outcome misclassification
+
+## Differential outcome misclassification
 
 Prior analyses assumed that outcome misclassification is non-differential. However, differential outcome misclassification is conceivable. The sources and mechanisms of differential misclassification are summarized in a mind-map ([link to resource - in progress)](https://mm.tt/app/map/3433596501?t=S3mwy4V8Vu)). Here, the focus is on how the main candidate predictors of the diagnostic prediction model could have led to differential outcome misclassification through a mechanism that systematically increases the FPR with the probability of being a case and/or increases the FNR with the probability of being a control, as these are the two mechanisms that could have led AUC overestimation in the original diagnostic rule development study. Only **age** and **smoking** are thought to potentially lead to differential outcome misclassification through plausible mechanisms, because radiologists were blinded to participant characteristics, thereby blocking the sources of differential outcome misclassification for the other predictors.
 
@@ -561,6 +821,15 @@ Prior analyses assumed that outcome misclassification is non-differential. Howev
 |                                                                                                                                                                                                                                                                                                                                                                           |
 | On the contrary, radiologist number 2 (R2) is convinced that semi-sweet chocolate (ILO 1) is the right choice as soon as they see the shelve and does not even consider other options. Thus, the final score for R2 is **1/1**.                                                                                                                                           |
 +---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+\pagebreak
+
+### Package References
+
+```{r}
+#| output: asis
+report::cite_packages(session)
+```
 
 \pagebreak
 

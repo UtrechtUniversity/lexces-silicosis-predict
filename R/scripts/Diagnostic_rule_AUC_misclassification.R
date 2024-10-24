@@ -1,7 +1,7 @@
 #### About this script ####
 ## Title: Estimation of the impact of outcome misclassification in a
 ##        pneumoconiosis diagnostic prediction rule
-## Author: Javier Mancilla Galindo
+## Author: Javier Mancilla Galindo, Lützen Portengen 
 ## ORCiD: https://orcid.org/0000-0002-0718-467X
 ##
 ## Purpose: This script follows the procedure described by Zawitowski, et al. 
@@ -52,10 +52,21 @@ B6 <- 0.916 # Standardized residual FEV1 <-1.0
 # Misclassification parameters were calculated from data reported in a 
 # recent study in artificial stone benchtop industry workers
 # https://onlinelibrary.wiley.com/doi/10.1111/resp.14755
-Sn <- 0.575   # Sensitivity
-Sp <- 0.971  # Specificity
-g0 <- 1 - Sp  # gamma0 (false-positive rate)
-g1 <- 1 - Sn  # gamma1 (false-negative rate)
+
+# Sensitivity and Specificity confidence intervals
+Sn_ci <- c(0.41, 0.726)  # 95% CI for sensitivity
+Sp_ci <- c(0.891, 0.995) # 95% CI for specificity
+
+# Negative correlation between Sensitivity and Specificity
+correlation <- -0.8  
+
+# Define covariance matrix for bivariate normal distribution
+Sn_var <- ((Sn_ci[2] - Sn_ci[1]) / (2 * 1.96))^2
+Sp_var <- ((Sp_ci[2] - Sp_ci[1]) / (2 * 1.96))^2
+
+cov_matrix <- matrix(c(Sn_var, correlation * sqrt(Sn_var * Sp_var),
+                       correlation * sqrt(Sn_var * Sp_var), Sp_var), 
+                     nrow = 2)
 
 # Initialize vectors to store results
 ROC_observed <- vector(length = num_repetitions)
@@ -72,6 +83,15 @@ sum_low_risk_true <- vector(length = num_repetitions)
 #### Simulation of data, scores, and AUC estimates for every new sample ####
 
 for (i in 1:num_repetitions) {
+  # Simulate Sensitivity and Specificity using a bivariate normal distribution
+  Sn_Sp_sample <- MASS::mvrnorm(1, mu = c(0.575, 0.971), Sigma = cov_matrix)
+  Sn_sim <- pmin(pmax(Sn_Sp_sample[1], 0), 1) # Ensure valid probability (0-1)
+  Sp_sim <- pmin(pmax(Sn_Sp_sample[2], 0), 1) # Ensure valid probability (0-1)
+  
+  # Misclassification parameters (varying for each iteration)
+  g0 <- 1 - Sp_sim  # gamma0 (false-positive rate)
+  g1 <- 1 - Sn_sim  # gamma1 (false-negative rate)
+  
   # Simulate Data
   X1 <- rbinom(N, 1, prop_1) # Age > 40
   X2 <- rbinom(N, 1, prop_2) # Current smoker
@@ -84,13 +104,13 @@ for (i in 1:num_repetitions) {
   p <- exp(
     B0 + B1*X1 + B2*X2 + B3*X3 + B4*X4 + B5*X5 + B6*X6) / 
     (1 + exp(B0 + B1*X1 + B2*X2 + B3*X3 + B4*X4 + B5*X5 + B6*X6)
-     ) 
+    ) 
   
   # Simulate observed outcome based on prediction rule formula
   Outcome_observed <- rbinom(N, 1, p)
   
   # Reverse-misclassify outcome (Index test to reference test)
-  Outcome_true <- misclassify_reverse(Outcome_observed, Sn, Sp)
+  Outcome_true <- misclassify_reverse(Outcome_observed, Sn_sim, Sp_sim)
   
   # Calculate scores according to the diagnostic prediction rule
   score <- X1*1 + X2*1 + X3*1.5 + X4*1.5 + X5*1.25 + X6*1.25
@@ -101,8 +121,8 @@ for (i in 1:num_repetitions) {
   ### Descriptives ### 
   sum_low_risk[i] <- sum(risk_category == "low_risk")
   sum_high_risk[i] <- sum(risk_category == "high_risk")
-  sum_outcome_observed[i] <- sum(Outcome_observed==1)
-  sum_outcome_true[i] <- sum(Outcome_true==1)
+  sum_outcome_observed[i] <- sum(Outcome_observed == 1)
+  sum_outcome_true[i] <- sum(Outcome_true == 1)
   sum_high_risk_observed[i] <- sum(Outcome_observed[risk_category == "high_risk"] == 1)
   sum_high_risk_true[i] <- sum(Outcome_true[risk_category == "high_risk"] == 1)
   sum_low_risk_observed[i] <- sum(Outcome_observed[risk_category == "low_risk"] == 1)
@@ -137,11 +157,10 @@ ROC_results <- data.frame(
   sum_low_risk_true = sum_low_risk_true
 )
 
-### The following lines of code only work when sourced from main qmd file: 
 write.csv(
   ROC_results, 
-  file = paste0(tabfolder, "/ROC_results_scenario_1.csv"),
+  file = paste0(tabfolder, "/ROC_results_scenario_1_corr0.8.csv"),
   row.names = F
-  )
+)
 
 #### END ####
