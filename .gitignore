@@ -37,6 +37,10 @@ vignettes/*.pdf
 *_cache/
 /cache/
 
+# HTML and PDF files rendered from qmd files in R directory
+R/*.html
+R/*.pdf
+
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md

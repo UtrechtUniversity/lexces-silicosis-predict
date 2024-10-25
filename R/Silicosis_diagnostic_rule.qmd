@@ -72,27 +72,6 @@ pacman::p_load(
 )
 ```
 
-#### Session and package dependencies
-
-```{r}
-#| echo: false  
-
-# remove clutter
-session <- sessionInfo()
-session$BLAS <- NULL
-session$LAPACK <- NULL
-session$loadedOnly <- NULL
-# write log file
-writeLines(
-  capture.output(print(session, locale = FALSE)),
-  paste0("sessions/",lubridate::today(), "_session_Silicosis_diagnostic_rule.txt")
-)                 
-
-session
-```
-
-\pagebreak
-
 # Background
 
 A diagnostic prediction model to **rule out** pneumoconiosis in construction workers was developed and published in 2007.[@Suarthana2007] The study population consisted of Dutch natural stone construction workers age 30 years and older. Lexces partners are currently designing a health surveillance program (HSP) for respiratory occupational diseases, including silicosis. The diagnostic prediction rule could be incorporated into the HSP to determine which workers exposed to silica dust should undergo further diagnostic workup for silicosis. However, concerns have been raised about the prediction rule not detecting early cases of silicosis. Thus, the objective of this work is to provide an overview of the diagnostic prediction rule and to estimate the extent, impact, and implications of outcome misclassification with its use.
@@ -211,8 +190,8 @@ Using the summary data reported by Hoy, et al.[@Hoy2024] for different ILO score
 
 |       | HRCT + | HRCT - |     |
 |-------|--------|--------|-----|
-| CXR + | 23     | 2      | 27  |
-| CXR - | 17     | 68     | 83  |
+| CXR + | 23     | 2      | 25  |
+| CXR - | 17     | 68     | 85  |
 |       | 40     | 70     | 110 |
 
 ```{r}
@@ -823,6 +802,25 @@ Prior analyses assumed that outcome misclassification is non-differential. Howev
 +---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 \pagebreak
+
+#### Session and package dependencies
+
+```{r}
+#| echo: false  
+
+# remove clutter
+session <- sessionInfo()
+session$BLAS <- NULL
+session$LAPACK <- NULL
+session$loadedOnly <- NULL
+# write log file
+writeLines(
+  capture.output(print(session, locale = FALSE)),
+  paste0("sessions/",lubridate::today(), "_session_Silicosis_diagnostic_rule.txt")
+)                 
+
+session
+```
 
 ### Package References
 
