@@ -1,0 +1,19 @@
+---
+title: "Silicosis Diagnostic Prediction Rule"
+format: 
+  html:
+    theme: minty
+    code-links:
+        href: https://github.com/UtrechtUniversity/lexces-silicosis-predict
+        icon: github
+---
+
+<div style="width: 60%; text-align: center;">
+  [![](images/lexces-logo.jpg)](https://www.lexces.nl/nl)
+</div>
+
+# Home
+
+Welcome to the Silicosis Prediction Rule Evaluation website. Bellow you will find a link to the working paper.
+
+-   [Silicosis Diagnostic Rule Report](Silicosis_diagnostic_rule.html)

@@ -51,6 +51,9 @@ R/*.pdf
 # Manuscript and related documentation
 # docs/
 
+# Lexces logo source file 
+LEXCES_LOGO-BASIS_CMYK.jpg
+
 # translation temp files
 po/*~
 

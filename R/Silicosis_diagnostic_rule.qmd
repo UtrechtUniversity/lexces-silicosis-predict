@@ -14,6 +14,10 @@ format:
     toc: true
     toc_float: true
     embed-resources: true
+    code-links:
+        - text: "GitHub"
+          href: https://github.com/UtrechtUniversity/lexces-silicosis-predict
+          icon: github
   pdf: 
     toc: true
     documentclass: scrartcl

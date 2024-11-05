@@ -1,3 +1,9 @@
+<div align="center">
+  <a href="https://www.lexces.nl">
+    <img src="lexces-logo.jpg" alt="Lexces Logo" width="80%">
+  </a>
+</div>
+
 # Evaluation of a silicosis diagostic prediction rule
 
 This repository contains the code and documentation for the evaluation of a diagnostic prediction rule for silicosis, which was developed in the Netherlands [see 2007 research paper](https://oem.bmj.com/lookup/doi/10.1136/oem.2006.027904) to rule out pneumoconiosis and identify workers at high risk for further diagnostic workup. Simulated data is used to replicate samples with similar summary characteristics as those provided in the original study, and different scenarios are simulated by incorporating outcome misclassification rates.
@@ -58,6 +64,8 @@ The project structure distinguishes three kinds of folders:
 
 ## License
 
-This project is licensed under the terms of the [MIT License](/LICENSE).
+This project is licensed under the terms of the [MIT License](/LICENSE). 
+
+Permission to use the Lexces logo for this project has been obtained. Please refer to their [copyright notice](https://www.lexces.nl/en/copyright).
 
 This project structure repository is adapted from the [Utrecht University simple R project template](https://github.com/UtrechtUniversity/simple-r-project), which builds upon the [Good Enough Project](https://github.com/bvreede/good-enough-project) Cookiecutter template by Barbara Vreede (2019).
