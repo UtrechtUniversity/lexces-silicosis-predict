@@ -1,0 +1,255 @@
+---
+title: "Silicosis Diagnostic Rule"
+subtitle: "Diagnostic Accuracy of Chest X-Ray for Silicosis in (Construction) Workers"
+author: 
+  - "Javier Mancilla Galindo, junior researcher" 
+  - "Dr. Lützen Portengen, supervisor      " 
+  - "Dr. Susan Peters, supervisor          "
+date: today
+abstract: "Objective: To perform a rapid systematic review of studies comparing chest X-Ray (index test) against chest CT (reference test) for the diagnosis of silicosis in (construction) workers."
+keywords: [silicosis, ]
+execute: 
+  echo: false
+  warning: false
+format:
+  html:
+    toc: true
+    toc_float: true
+    embed-resources: true
+    code-links:
+        - text: "GitHub"
+          href: https://github.com/UtrechtUniversity/lexces-silicosis-predict
+          icon: github
+  pdf: 
+    toc: true
+    documentclass: scrartcl
+bibliography: ../docs/manuscript/lexces-silicosis-predict.bib
+csl: ../docs/manuscript/american-medical-association.csl
+editor: source
+---
+
+\pagebreak
+
+```{r}
+#| include: false  
+
+# Setup 
+
+# Create directories for sub-folders  
+inputfolder <- "../data/raw"
+psfolder <- "../data/processed"
+tempfolder <- "../data/temp"
+figfolder <- "../results/output_figures"
+tabfolder <- "../results/output_tables"
+
+dir.create(inputfolder, showWarnings = FALSE)
+dir.create(psfolder, showWarnings = FALSE)
+dir.create(tempfolder, showWarnings = FALSE)
+dir.create(figfolder, showWarnings = FALSE)
+dir.create(tabfolder, showWarnings = FALSE)
+```
+
+```{r}
+#| include: false  
+
+# Packages used 
+
+if (!require("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+}
+
+pacman::p_load(
+  tidyverse,  # Used for basic data handling and visualization.
+  rentrez,    # Used to search PubMed.
+  XML,        # Used to parse XML data.
+  gt,         # Used to print html tables.  
+  report      # Used to cite packages used in this session.    
+)
+```
+
+# Research Question
+
+What is the diagnostic accuracy of chest X-Ray (index test) compared to chest CT (reference test) for the diagnosis of silicosis in (construction) workers?
+
+## PIRD Framework
+
+P = Population: (Construction) workers with suspected silicosis
+
+I = Index test: Chest X-Ray
+
+R = Reference test: Chest computed tomography (CT)
+
+D = Disease: Silicosis or pneumoconiosis
+
+## Terms
+
+### Population
+
+-   Construction workers
+-   Construction industry
+-   Occupational exposure
+-   Occupational diseases
+
+### Index Test
+
+-   Chest radiography
+-   Chest X-ray
+-   CXR
+
+### Reference Test
+
+-   Computed tomography
+-   CT scan
+-   Chest CT
+
+Available search block: [https://blocks.bmi-online.nl/catalog/75](https://blocks.bmi-online.nl/catalog/75)
+
+```
+"Tomography, X-Ray Computed"[Mesh] OR computed tomograph*[tiab] OR ct[tiab] OR cts[tiab] OR cat scan*[tiab] OR computer assisted tomograph*[tiab] OR computerized tomograph*[tiab] OR computerised tomograph*[tiab] OR computed x ray tomograph*[tiab] OR computed xray tomograph*[tiab]
+```
+
+
+### Disease
+
+-   Silicosis
+-   Pneumoconiosis
+
+
+# Search Strategy
+
+## PubMed
+
+```{r}
+#| echo: true  
+query <- '(("Construction Industry"[MeSH] OR "construction"[Title/Abstract] OR "construction workers"[Title/Abstract] OR "occupational exposure"[MeSH] OR "occupational diseases"[MeSH]) AND ("Radiography, Thoracic"[MeSH] OR "chest radiography"[Title/Abstract] OR "chest X-ray"[Title/Abstract] OR "CXR"[Title/Abstract]) AND ("Tomography, X-Ray Computed"[MeSH] OR "CT scan"[Title/Abstract] OR "computed tomography"[Title/Abstract]) AND ("Silicosis"[MeSH] OR "silicosis"[Title/Abstract] OR "Pneumoconiosis"[MeSH] OR "pneumoconiosis"[Title/Abstract]))'
+```
+
+
+```{r}
+# Search PubMed and get the count
+search_results <- entrez_search(db="pubmed", term=query, retmax=0)
+total_count <- search_results$count
+cat("Total articles to retrieve:", total_count, "\n")
+```
+
+
+```{r}
+#| include: false
+
+# Initialize results dataframe
+results <- data.frame(
+  title = character(),
+  abstract = character(),
+  doi = character(),
+  stringsAsFactors = FALSE
+)
+
+# Process in batches
+batch_size <- 50
+for(i in seq(1, total_count, batch_size)) {
+  cat(sprintf("Retrieving articles %d to %d of %d\n", i, min(i + batch_size - 1, total_count), total_count))
+  
+  # Get batch of records
+  batch_results <- entrez_search(db="pubmed", term=query, 
+                                retstart=i-1, retmax=batch_size)
+  
+  if(length(batch_results$ids) > 0) {
+    # Fetch the full records for this batch
+    records <- entrez_fetch(db="pubmed", id=batch_results$ids, 
+                          rettype="xml", parsed=TRUE)
+    
+    # Process each article in the batch
+    articles <- XML::xpathApply(records, "//PubmedArticle")
+    
+    for(article in articles) {
+      # Extract title
+      title <- XML::xpathSApply(article, ".//ArticleTitle", XML::xmlValue)
+      title <- if(length(title) > 0) title[1] else NA
+      
+      # Extract abstract
+      abstract <- XML::xpathSApply(article, ".//Abstract/AbstractText", XML::xmlValue)
+      abstract <- if(length(abstract) > 0) paste(abstract, collapse=" ") else NA
+      
+      # Extract DOI
+      doi <- XML::xpathSApply(article, ".//ArticleId[@IdType='doi']", XML::xmlValue)
+      doi <- if(length(doi) > 0) doi[1] else NA
+      
+      # Add to results
+      results <- rbind(results, data.frame(
+        title = title,
+        abstract = abstract,
+        doi = doi,
+        stringsAsFactors = FALSE
+      ))
+    }
+  }
+  
+  # Add a small delay to be gentle to the server
+  Sys.sleep(0.5)
+}
+```
+
+
+```{r}
+# Save to CSV
+write.csv(results, paste0(inputfolder,"/",lubridate::today(),"_PubMed_search.csv"), row.names = FALSE)
+
+# Print summary
+cat("\nRetrieval complete.\n")
+cat("Total articles retrieved:", nrow(results), "\n")
+cat("Articles with abstracts:", sum(!is.na(results$abstract)), "\n")
+cat("Articles with DOIs:", sum(!is.na(results$doi)), "\n")
+```
+
+{{< pagebreak >}}
+
+
+
+# ASReview
+
+
+
+
+{{< pagebreak >}}
+
+#### Session and package dependencies
+
+```{r}
+#| echo: false  
+
+# remove clutter
+session <- sessionInfo()
+session$BLAS <- NULL
+session$LAPACK <- NULL
+session$loadedOnly <- NULL
+# write log file
+writeLines(
+  capture.output(print(session, locale = FALSE)),
+  paste0("sessions/",lubridate::today(), "_session_Silicosis_diagnostic_rule.txt")
+)                 
+
+session
+```
+
+{{< pagebreak >}}
+
+# References
+
+::: {#refs}
+:::
+
+{{< pagebreak >}}
+
+### Package References
+
+```{r}
+#| output: asis
+report::cite_packages(session)
+```
+
+```{r}
+#| include: false
+
+# Run this chunk if you wish to clear your environment.
+rm(list = ls())
+```

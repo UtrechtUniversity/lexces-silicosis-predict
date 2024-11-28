@@ -6,6 +6,10 @@
 
 # Evaluation of a silicosis diagostic prediction rule
 
+**Under Construction** 🚧
+
+[![GitHub Page](https://img.shields.io/badge/GitHub_Pages_Link-Progress_40%20-orange)](https://utrechtuniversity.github.io/lexces-silicosis-predict/)
+
 This repository contains the code and documentation for the evaluation of a diagnostic prediction rule for silicosis, which was developed in the Netherlands [see 2007 research paper](https://oem.bmj.com/lookup/doi/10.1136/oem.2006.027904) to rule out pneumoconiosis and identify workers at high risk for further diagnostic workup. Simulated data is used to replicate samples with similar summary characteristics as those provided in the original study, and different scenarios are simulated by incorporating outcome misclassification rates.
 
 [Lexces](https://www.lexces.nl/) aims to prevent new cases of silicosis in Dutch workers. For this, [a Health Surveillance Program (HSP) for respiratory occupational diseases is being developed](https://www.lexces.nl/en/node/52). The diagnostic prediction rule could be incorporated as part of the HSP. However, the diagnostic rule was developed in the past with chest x-rays (CXR) as the reference standard for the diagnosis of silicosis. Recently, there have been concerns of [suboptimal diagnostic performance of CXR for the diagnosis of silicosis](https://onlinelibrary.wiley.com/doi/10.1111/resp.14755). Thus, the current work aims to assess the potential impact of misclassification error on the diagnostic rule's performance, and to scope for potential alternative diagnostic and prediction models for silicosis/pneumoconiosis. 
@@ -27,7 +31,7 @@ If you are not able to follow the prior steps, you may also consider reviewing t
 
 Currently, there is only one relevant .qmd file linked to the R scripts and analyses: 
 
--   [Misclassification error of silicosis diagnostic prediction rule](R/Silicosis_diagnostic_rule.qmd). Link to the report: [PDF](docs/reports/Silicosis_diagnostic_rule.pdf)
+-   [Misclassification error of silicosis diagnostic prediction rule](R/Silicosis_diagnostic_rule.qmd). Link to the report: [PDF](docs/Silicosis_diagnostic_rule.pdf)
 
 Although I have made significant efforts to ensure reproducibility of this project, I encourage you to [contact me](mailto:j.mancillagalindo@uu.nl) or post a request in this repository in case you encounter any issues.   
 
