@@ -41,6 +41,9 @@ vignettes/*.pdf
 R/*.html
 R/*.pdf
 
+# Work for Lexces proposal
+R/Lexces_2.0*
+
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md

@@ -8,8 +8,14 @@ authors:
     orcid: https://orcid.org/0000-0002-0718-467X
     affiliation: "Institute for Risk Assessment Sciences, Utrecht University"
     email: "j.mancillagalindo@uu.nl"
-  - name: Lexces
-    url: "https://www.lexces.nl/"
+  - family-names: Portengen
+    given-names: Lutzen
+    orcid: https://orcid.org/0000-0001-5662-1971
+    affiliation: "Institute for Risk Assessment Sciences, Utrecht University"
+  - family-names: Peters
+    given-names: Susan
+    orcid: https://orcid.org/0000-0001-5662-1971
+    affiliation: "Institute for Risk Assessment Sciences, Utrecht University"
 version: 1.0.0
 date-released: 2024-09-05
 doi: pending

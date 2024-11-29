@@ -58,7 +58,7 @@ Sn_ci <- c(0.41, 0.726)  # 95% CI for sensitivity
 Sp_ci <- c(0.891, 0.995) # 95% CI for specificity
 
 # Negative correlation between Sensitivity and Specificity
-correlation <- -0.8  
+correlation <- -0.9  
 
 # Define covariance matrix for bivariate normal distribution
 Sn_var <- ((Sn_ci[2] - Sn_ci[1]) / (2 * 1.96))^2
@@ -159,7 +159,7 @@ ROC_results <- data.frame(
 
 write.csv(
   ROC_results, 
-  file = paste0(tabfolder, "/ROC_results_scenario_1_corr0.8.csv"),
+  file = paste0(tabfolder, "/ROC_results_scenario_2_corr0.9.csv"),
   row.names = F
 )
 

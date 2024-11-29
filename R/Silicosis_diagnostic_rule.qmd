@@ -184,6 +184,31 @@ Nonetheless, a **higher cut-off point of 5** has been used in practice.[@Stigter
 
 The decision to use a higher cut-off point than the optimal is likely due to the large number of individuals that should undergo CXR with a 3.75 cut-off (43.9%) vs 5.25 (9.2%).
 
+## Correlation accross reported sensitivity and specificity 
+
+```{r}
+# Define sensitivity and specificity values reported in the paper
+sensitivity <- c(100, 100, 89.2, 83.8, 59.5, 56.8, 35.1)
+specificity <- c(18, 48.4, 57.4, 63.1, 78.4, 80.1, 91.5)
+
+ggplot(aes(x=sensitivity,y=specificity), data = data.frame(sensitivity,specificity)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_point() +
+  labs(x = "Sensitivity (%)", y = "Specificity (%)") +
+  theme_minimal() +
+  ylim(0, 100) +
+  theme(
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) 
+```
+
+Assuming a linear relationship between sensitivity and specificity, the correlation between them is `r cor(sensitivity, specificity) %>% round(2)`. Thus, two scenarios will be modelled, one with correlation of -0.8 and another with -0.9.
+
 \pagebreak
 
 # Misclassification of chest X-Ray vs HRCT
@@ -521,7 +546,7 @@ ggsave(
 
 ### Scenario 2
 
-Sensitivity and specificity confidence intervals from Hoy, et al.[@Hoy2024] are used, simulating combinations of Sn and Sp from a bivariate normal distribution and a **correlation of -0.7** between them. 
+Sensitivity and specificity confidence intervals from Hoy, et al.[@Hoy2024] are used, simulating combinations of Sn and Sp from a bivariate normal distribution and a **correlation of -0.9** between them. 
 
 -   Sensitivity 95%CI: 41.0 - 72.6
 -   Specificity 95%CI: 89.1 - 99.5
@@ -529,7 +554,7 @@ Sensitivity and specificity confidence intervals from Hoy, et al.[@Hoy2024] are 
 The distribution of low risk and high risk participants is as follows:
 
 ```{r}
-ROC_results <- read.csv(file.path(tabfolder, "ROC_results_scenario_1_corr0.7.csv"))
+ROC_results <- read.csv(file.path(tabfolder, "ROC_results_scenario_2_corr0.9.csv"))
 
 columns <- c(
   "sum_low_risk",
@@ -554,7 +579,7 @@ table_results <- data.frame(
 ) 
 
 table_results %>% gt() %>% 
-  gtsave(filename = "Risk_categories_count_corr0.7.rtf", path = tabfolder)
+  gtsave(filename = "Risk_categories_count_corr0.9.rtf", path = tabfolder)
 
 table_results %>% gt()
 ```
@@ -581,7 +606,7 @@ table_results <- data.frame(
 )
 
 table_results %>% gt() %>% 
-  gtsave(filename = "Cases_count_corr0.7.rtf", path = tabfolder)
+  gtsave(filename = "Cases_count_corr0.9.rtf", path = tabfolder)
 
 table_results %>% gt()
 ```
@@ -619,7 +644,7 @@ table_results <- data.frame(
 )
 
 table_results %>% gt() %>% 
-  gtsave(filename = "Prevalence_corr0.7.rtf", path = tabfolder)
+  gtsave(filename = "Prevalence_corr0.9.rtf", path = tabfolder)
 
 table_results %>% gt()
 ```
@@ -667,7 +692,7 @@ ROC_results_random %>%
   
 # Save in figfolder with white background 
 ggsave(
-  file.path(figfolder, "prevalence_high_risk_corr0.7.png"),
+  file.path(figfolder, "prevalence_high_risk_corr0.9.png"),
   width = 6, 
   height = 4,
   dpi = 300,
@@ -704,7 +729,7 @@ ROC_results_random %>%
   
 # Save in figfolder with white background 
 ggsave(
-  file.path(figfolder, "prevalence_low_risk_corr0.7.png"),
+  file.path(figfolder, "prevalence_low_risk_corr0.9.png"),
   width = 6, 
   height = 4,
   dpi = 300,
@@ -728,7 +753,7 @@ table_results <- data.frame(
 )
 
 table_results %>% gt() %>% 
-  gtsave(filename = "Corrected_ROC_corr0.7.rtf", path = tabfolder)
+  gtsave(filename = "Corrected_ROC_corr0.9.rtf", path = tabfolder)
 
 table_results %>% gt()
 ```
@@ -765,7 +790,7 @@ ROC_results %>%
   coord_cartesian(expand = FALSE)
 
 ggsave(
-  file.path(figfolder, "AUC_corrected_corr0.7.png"),
+  file.path(figfolder, "AUC_corrected_corr0.9.png"),
   width = 5, 
   height = 4,
   dpi = 300,
