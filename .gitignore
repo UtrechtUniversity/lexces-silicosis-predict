@@ -43,6 +43,7 @@ R/*.pdf
 
 # Work for Lexces proposal
 R/Lexces_2.0*
+docs/reports/Lexces_2.0*
 
 # Temporary files created by R markdown
 *.utf8.md
@@ -52,7 +53,8 @@ R/Lexces_2.0*
 .Renviron
 
 # Manuscript and related documentation
-# docs/
+docs/manuscript/*Mosa*
+docs/reports/*.docx
 
 # Lexces logo source file 
 LEXCES_LOGO-BASIS_CMYK.jpg

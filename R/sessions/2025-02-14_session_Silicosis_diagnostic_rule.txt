@@ -1,0 +1,18 @@
+R version 4.4.0 (2024-04-24 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26100)
+
+Matrix products: default
+
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] report_0.5.9             gt_0.11.0                gridExtra_2.3           
+ [4] rriskDistributions_2.1.2 meta_8.0-2               metadat_1.4-0           
+ [7] epitools_0.5-10.1        readxl_1.4.3             lubridate_1.9.3         
+[10] forcats_1.0.0            stringr_1.5.1            dplyr_1.1.4             
+[13] purrr_1.0.2              readr_2.1.5              tidyr_1.3.1             
+[16] tibble_3.2.1             ggplot2_3.5.1            tidyverse_2.0.0         
+[19] pacman_0.5.1            

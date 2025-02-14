@@ -26,87 +26,69 @@
 
 #### Set parameters ####
 
+# Set seed for reproducibility
+set.seed(2024) # Current year
+
 # Number of repetitions
 num_repetitions <- 5000
 
-# Sample size for every new simulation
-N <- 1291 # Chosen to be similar to diagnostic rule development sample size
+# Sample characteristics:
 
-# Prediction rule model effect size parameters in OEM paper
-B0 <- -6.33
-B1 <- 0.72 # Age > 40
-B2 <- 0.70 # Current smoker
-B3 <- 1.14 # High exposed job title
-B4 <- 1.00 # Work in the construction industry > 15 years
-B5 <- 0.846 # Feeling unhealthy
-B6 <- 0.916 # Standardized residual FEV1 <-1.0
+# source("R/scripts/sample_characteristics_simulation.R")
 
-# Frequency distribution of predictors in original OEM paper
-prop_1 <- 690/1291 # Age > 40
-prop_2 <- 642/1291 # Current smoker
-prop_3 <- 868/1291 # High exposed job title
-prop_4 <- 830/1291 # Work in the construction industry > 15 years
-prop_5 <- 145/1291 # Feeling unhealthy
-prop_6 <- 183/1291 # Standardized residual FEV1 <-1.0
+# Misclassification parameters were obtained from a systematic review
+# and meta-analysis of the diagnostic accuracy of CXR against HRCT for 
+# https://thorax.bmj.com/lookup/doi/10.1136/thorax-2024-BTSabstracts.23
+# and associated data in the repository: 
+# https://github.com/pjhowlett/da_silic_cxr
 
-  # Age 
-  n1 <- 1254    # Number of outcome-negative participants
-  n2 <- 37      # Number of outcome-positive participants
-  mean1 <- 41.3 # Mean age for outcome-negative participants
-  mean2 <- 46.1 # Mean age for outcome-positive participants
-  sd1 <- 7.7    # Standard deviation for outcome-negative participants
-  sd2 <- 7.9    # Standard deviation for outcome-positive participants
-    # Weighted mean
-  age_mean <- ((n1 * mean1) + (n2 * mean2)) / (n1 + n2)
-    # Pooled standard deviation
-  age_sd <- sqrt((((n1 - 1) * sd1^2) + ((n2 - 1) * sd2^2)) / (n1 + n2 - 2))
+# Values are defined in environment after sourcing into qmd file the script: 
+# Howlett_CXR_HRCT_dx_performance.R 
 
-  # COPD  
-  
-# Misclassification parameters were calculated from data reported in a 
-# recent study in artificial stone benchtop industry workers
-# https://onlinelibrary.wiley.com/doi/10.1111/resp.14755
+# Get beta parameters for the beta distribution of sensitivity
+beta_params <- get.beta.par(
+  p = c(0.025, 0.975),                      # For 95% CI
+  q = c(pooled_ci_Sn[1], pooled_ci_Sn[2]),  # Pooled sensitivity 95%CI
+  m = pooled_Sn,                            # Pooled sensitivity
+  plot = FALSE,
+  show = FALSE
+)
 
-# Sensitivity and Specificity confidence intervals
-Sn_ci <- c(0.41, 0.726)  # 95% CI for sensitivity
-Sp_ci <- c(0.891, 0.995) # 95% CI for specificity
-
-# Negative correlation between Sensitivity and Specificity
-correlation <- -0.9  
-
-# Define covariance matrix for bivariate normal distribution
-Sn_var <- ((Sn_ci[2] - Sn_ci[1]) / (2 * 1.96))^2
-Sp_var <- ((Sp_ci[2] - Sp_ci[1]) / (2 * 1.96))^2
-
-cov_matrix <- matrix(c(Sn_var, correlation * sqrt(Sn_var * Sp_var),
-                       correlation * sqrt(Sn_var * Sp_var), Sp_var), 
-                     nrow = 2)
+alpha <- beta_params[1]
+beta <- beta_params[2]
 
 # Initialize vectors to store results
 ROC_observed <- vector(length = num_repetitions)
 ROC_observed_corrected <- vector(length = num_repetitions)
 sum_low_risk <- vector(length = num_repetitions)
-sum_medium_risk <- vector(length = num_repetitions)
 sum_high_risk <- vector(length = num_repetitions)
 sum_outcome_observed <- vector(length = num_repetitions)
 sum_outcome_true <- vector(length = num_repetitions)
 sum_high_risk_observed <- vector(length = num_repetitions)
 sum_high_risk_true <- vector(length = num_repetitions)
-sum_medium_risk_observed <- vector(length = num_repetitions)
-sum_medium_risk_true <- vector(length = num_repetitions)
 sum_low_risk_observed <- vector(length = num_repetitions)
 sum_low_risk_true <- vector(length = num_repetitions)
 mean_age_low_risk_true <- vector(length = num_repetitions)
-mean_age_medium_risk_true <- vector(length = num_repetitions)
 mean_age_high_risk_true <- vector(length = num_repetitions)
 
 #### Simulation of data, scores, and AUC estimates for every new sample ####
 
 for (i in 1:num_repetitions) {
-  # Simulate Sensitivity and Specificity using a bivariate normal distribution
-  Sn_Sp_sample <- MASS::mvrnorm(1, mu = c(0.575, 0.971), Sigma = cov_matrix)
-  Sn_sim <- pmin(pmax(Sn_Sp_sample[1], 0), 1) # Ensure valid probability (0-1)
-  Sp_sim <- pmin(pmax(Sn_Sp_sample[2], 0), 1) # Ensure valid probability (0-1)
+  # Show progress every 500 iterations
+  if (i %% 500 == 0) {
+    progress <- (i/num_repetitions) * 100
+    cat(sprintf("Completed %d simulations (%.1f%%)\n", i, progress))
+  }
+  
+  # Sample Sensitivity from Beta distribution from meta-analysis
+  Sn_sim <- rbeta(1, alpha, beta)
+  
+  # Compute Specificity (Sp) using the DOR formula, with corrected DOR
+  Sp_sim <- calculate_Sp(Sn_sim, pooled_DOR)
+  
+  # Ensure probabilities stay within valid bounds
+  Sn_sim <- pmin(pmax(Sn_sim, 0), 1)
+  Sp_sim <- pmin(pmax(Sp_sim, 0), 1)
   
   # Misclassification parameters (varying for each iteration)
   g0 <- 1 - Sp_sim  # gamma0 (false-positive rate)
@@ -115,7 +97,7 @@ for (i in 1:num_repetitions) {
   # Simulate Data
   age <- rnorm(N, age_mean, age_sd)
   
-  X1 <- rbinom(N, 1, prop1) # Age > 40
+  X1 <- rbinom(N, 1, prop_1) # Age > 40
   age[X1 == 1] <- pmax(age[X1 == 1], 40) # Ensure age > 40 where X1 = 1
   X2 <- rbinom(N, 1, prop_2) # Current smoker
   X3 <- rbinom(N, 1, prop_3) # High exposed job title
@@ -127,7 +109,7 @@ for (i in 1:num_repetitions) {
   p <- exp(
     B0 + B1*X1 + B2*X2 + B3*X3 + B4*X4 + B5*X5 + B6*X6) / 
     (1 + exp(B0 + B1*X1 + B2*X2 + B3*X3 + B4*X4 + B5*X5 + B6*X6)
-    ) 
+    )
   
   # Simulate observed outcome based on prediction rule formula
   Outcome_observed <- rbinom(N, 1, p)
@@ -139,23 +121,18 @@ for (i in 1:num_repetitions) {
   score <- X1*1 + X2*1 + X3*1.5 + X4*1.5 + X5*1.25 + X6*1.25
   
   # Categorize into high and low risk. 
-  risk_category <-  ifelse(score >= 5, "high_risk", 
-                           ifelse(score >= 3.75, "medium_risk", "low_risk"))
+  risk_category <-  ifelse(score >= 5, "high_risk", "low_risk")
   
   ### Descriptives ### 
   sum_low_risk[i] <- sum(risk_category == "low_risk")
-  sum_medium_risk[i] <- sum(risk_category == "medium_risk")
   sum_high_risk[i] <- sum(risk_category == "high_risk")
   sum_outcome_observed[i] <- sum(Outcome_observed == 1)
   sum_outcome_true[i] <- sum(Outcome_true == 1)
   sum_high_risk_observed[i] <- sum(Outcome_observed[risk_category == "high_risk"] == 1)
   sum_high_risk_true[i] <- sum(Outcome_true[risk_category == "high_risk"] == 1)
-  sum_medium_risk_observed[i] <- sum(Outcome_observed[risk_category == "medium_risk"] == 1)
-  sum_medium_risk_true[i] <- sum(Outcome_true[risk_category == "medium_risk"] == 1)
   sum_low_risk_observed[i] <- sum(Outcome_observed[risk_category == "low_risk"] == 1)
   sum_low_risk_true[i] <- sum(Outcome_true[risk_category == "low_risk"] == 1)
   mean_age_low_risk_true = mean(age[risk_category == "low_risk" & Outcome_true == 1])
-  mean_age_medium_risk_true = mean(age[risk_category == "medium_risk" & Outcome_true == 1])
   mean_age_high_risk_true = mean(age[risk_category == "high_risk" & Outcome_true == 1])
   
   ### Observed outcome ROC analysis ###
@@ -178,25 +155,23 @@ ROC_results <- data.frame(
   ROC_observed_outcome = ROC_observed,
   ROC_observed_corrected = ROC_observed_corrected,
   sum_low_risk = sum_low_risk,
-  sum_medium_risk = sum_medium_risk,
   sum_high_risk = sum_high_risk,
   sum_outcome_observed = sum_outcome_observed,
   sum_outcome_true = sum_outcome_true, 
   sum_high_risk_observed = sum_high_risk_observed, 
   sum_high_risk_true = sum_high_risk_true,
-  sum_medium_risk_observed = sum_medium_risk_observed,
-  sum_medium_risk_true = sum_medium_risk_true,
   sum_low_risk_observed = sum_low_risk_observed,
   sum_low_risk_true = sum_low_risk_true,
   mean_age_low_risk_true = mean_age_low_risk_true,
-  mean_age_medium_risk_true = mean_age_medium_risk_true,
   mean_age_high_risk_true = mean_age_high_risk_true
 )
 
 write.csv(
   ROC_results, 
-  file = paste0(tabfolder, "/ROC_results_cutoff3_75.csv"),
+  file = paste0(tabfolder, "/Non-dif_low-high.csv"),
   row.names = F
 )
+
+cat("Simulation complete! Results saved in the output_tables folder as Non-dif_low-high.csv\n")
 
 #### END ####

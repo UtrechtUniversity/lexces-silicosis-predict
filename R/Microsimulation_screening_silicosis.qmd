@@ -1,0 +1,113 @@
+---
+title: "Microsimulation"
+subtitle: "Screening for silicosis in high-risk populations: a microsimulation study"
+author: 
+  - "Javier Mancilla Galindo"
+date: today
+execute: 
+  echo: false
+  warning: false
+format:
+  html:
+    toc: true
+    toc_float: true
+    embed-resources: true
+    code-links:
+        - text: "GitHub"
+          href: https://github.com/UtrechtUniversity/lexces-silicosis-predict
+          icon: github
+  pdf: 
+    toc: true
+    documentclass: scrartcl
+  docx:
+    reference-doc: template.docx
+bibliography: ../docs/manuscript/lexces-silicosis-predict.bib
+csl: ../docs/manuscript/american-medical-association.csl
+editor: source
+---
+
+```{r}
+#| include: false  
+
+# Setup 
+
+# Create directories for sub-folders  
+inputfolder <- "../data/raw"
+psfolder <- "../data/processed"
+tempfolder <- "../data/temp"
+figfolder <- "../results/output_figures"
+tabfolder <- "../results/output_tables"
+
+dir.create(inputfolder, showWarnings = FALSE)
+dir.create(psfolder, showWarnings = FALSE)
+dir.create(tempfolder, showWarnings = FALSE)
+dir.create(figfolder, showWarnings = FALSE)
+dir.create(tabfolder, showWarnings = FALSE)
+```
+
+```{r}
+#| include: false  
+
+# Packages used 
+
+if (!require("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+}
+
+pacman::p_load(
+  tidyverse,  # Used for basic data handling and visualization.
+  gt,         # Used to print html tables.  
+  report      # Used to cite packages used in this session.   
+)
+```
+
+# Background
+
+
+
+{{< pagebreak >}}
+
+# Individual cumulative exposure 
+
+
+{{< pagebreak >}}
+
+# References
+
+::: {#refs}
+:::
+
+{{< pagebreak >}}
+
+#### Session and package dependencies
+
+```{r}
+#| echo: false  
+
+# remove clutter
+session <- sessionInfo()
+session$BLAS <- NULL
+session$LAPACK <- NULL
+session$loadedOnly <- NULL
+# write log file
+writeLines(
+  capture.output(print(session, locale = FALSE)),
+  paste0("sessions/",lubridate::today(), "_session_Microsimulation_screening.txt")
+)                 
+
+session
+```
+
+### Package References
+
+```{r}
+#| output: asis
+report::cite_packages(session)
+```
+
+```{r}
+#| include: false
+
+# Run this chunk if you wish to clear your environment.
+rm(list = ls())
+```

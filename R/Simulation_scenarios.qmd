@@ -1,0 +1,497 @@
+---
+title: "Silicosis Diagnostic Rule"
+subtitle: "Description of diagnostic rule and impact of misclassification error"
+author: 
+  - "Javier Mancilla Galindo, junior researcher" 
+  - "Dr. Lützen Portengen, supervisor      " 
+  - "Dr. Susan Peters, supervisor          "
+date: today
+execute: 
+  echo: false
+  warning: false
+format:
+  html:
+    toc: true
+    toc_float: true
+    embed-resources: true
+    echo: true
+    code-fold: true
+    code-overflow: wrap
+    code-tools: true
+    code-links:
+        - text: "GitHub"
+          href: https://github.com/UtrechtUniversity/lexces-silicosis-predict
+          icon: github
+  docx:
+    reference-doc: ../docs/manuscript/template.docx
+bibliography: ../docs/manuscript/lexces-silicosis-predict.bib
+csl: ../docs/manuscript/american-medical-association.csl
+editor: source
+---
+
+{{< pagebreak >}}
+
+```{r}
+#| include: false  
+
+# Setup 
+
+# Create directories for sub-folders  
+inputfolder <- "../data/raw"
+psfolder <- "../data/processed"
+tempfolder <- "../data/temp"
+figfolder <- "../results/output_figures"
+tabfolder <- "../results/output_tables"
+
+dir.create(inputfolder, showWarnings = FALSE)
+dir.create(psfolder, showWarnings = FALSE)
+dir.create(tempfolder, showWarnings = FALSE)
+dir.create(figfolder, showWarnings = FALSE)
+dir.create(tabfolder, showWarnings = FALSE)
+```
+
+```{r}
+#| include: false  
+
+# Packages used 
+
+if (!require("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+}
+
+pacman::p_load(
+  tidyverse,  # Used for basic data handling and visualization.
+  MASS,       # Used for multivariate normal distribution.
+  gt,         # Used to print html tables.  
+  report      # Used to cite packages used in this session.   
+)
+```
+
+## Non-differential misclassification
+
+In the case of the diagnostic prediction rule, we do not know the value of the true outcome, which would have been determined with HRCT. Instead, the diagnostic prediction rule used CXR as the reference test, which means that only the value of the misclassified outcome is known. Zawistowski's[@Zawistowski2017] procedure can be adapted to obtain the reverse-misclassified outcome instead, by using the information from meta-analysis of diagnostic performance studies, to estimate what the AUC would have been had HRCT been used instead of CXR. The original functions, as well as the adapted reverse-misclassification function are found in the following script which is sourced into this document:
+
+```{r}
+#| echo: true
+source("scripts/Zawistowski_misclassification_functions.R")
+```
+
+```{r}
+#| echo: true
+#| eval: false
+source("scripts/Misclassification_non-differential_low_high.R")
+```
+
+```{r}
+#| echo: true
+#| eval: false
+source("scripts/Misclassification_non-differential_low_medium_high.R")
+```
+
+Simulated data with a sample size of 1291 participants is used to replicate samples with a similar size as the original diagnostic rule development study, by using the summary data reported in the paper and assigning the outcome based on the outcome probability from the diagnostic rule equation. A total of 5000 different samples are drawn to perform estimations of the potential impact of misclassification from the diagnostic prediction rule. Furthermore, scores for every fictitious participant are calculated based on the diagnostic prediction rule scoring system and a cut-off value of 5 is used to classify on high-risk (\>=5 points) and low-risk (\<5) of silicosis in Scenario 1, since this is the cut-off value that has been used in practice.[@Stigter2011; @Rooijackers2016] Scenario 2 includes an additional medium-risk category, with a cut-off value of 3.75 to 4.99 points. 
+
+{{< pagebreak >}}
+
+### Scenario 1
+
+The distribution of low risk and high risk participants is as follows:
+
+```{r}
+ROC_results <- read.csv(file.path(tabfolder, "Non-dif_low-high.csv"))
+
+columns <- c(
+  "sum_low_risk",
+  "sum_high_risk"
+  )
+
+# Summary statistics function 
+summary_stats <- function(column) {
+  c(Median = round(median(ROC_results[[column]]), 3),
+    P = round(quantile(ROC_results[[column]], 0.25), 3),
+    P = round(quantile(ROC_results[[column]], 0.75), 3),
+    Min = round(min(ROC_results[[column]]), 3),
+    Max = round(max(ROC_results[[column]]), 3))
+}
+
+table_results <- data.frame(
+  Risk = c(
+    "Low (<5 points)",
+    "High (>=5 points)"
+    ),
+  t(sapply(columns, summary_stats))
+) 
+
+table_results %>% gt()
+```
+
+The following table shows the distribution of outcome occurrence:
+
+```{r}
+columns <- c(
+  "sum_outcome_observed",
+  "sum_outcome_true",
+  "sum_high_risk_observed",
+  "sum_low_risk_observed",
+  "sum_high_risk_true",
+  "sum_low_risk_true"
+  )
+
+table_results <- data.frame(
+  Characteristic = c(
+    "Silicosis (CXR)","Silicosis (HRCT)","Silicosis (CXR) | high-risk",
+    "Silicosis (CXR) | low-risk","Silicosis (HRCT) | high-risk",
+    "Silicosis (HRCT) | low-risk"
+    ),
+  t(sapply(columns, summary_stats))
+)
+
+table_results %>% gt()
+```
+
+##### Prevalence of silicosis in high and low risk groups
+
+```{r}
+ROC_results <- 
+  ROC_results %>% 
+  mutate(
+    prevalence_high_risk_observed = sum_high_risk_observed/sum_high_risk*100,
+    prevalence_low_risk_observed = sum_low_risk_observed/sum_low_risk*100, 
+    prevalence_high_risk_true = sum_high_risk_true/sum_high_risk*100,
+    prevalence_low_risk_true = sum_low_risk_true/sum_low_risk*100,
+    ID = 1:nrow(ROC_results)
+  )
+```
+
+```{r}
+columns <- c(
+  "prevalence_high_risk_observed",
+  "prevalence_low_risk_observed",
+  "prevalence_high_risk_true",
+  "prevalence_low_risk_true"
+  )
+
+table_results <- data.frame(
+  Characteristic = c(
+    "Prevalence (CXR) | high-risk",
+    "Prevalence (CXR) | low-risk",
+    "Prevalence (HRCT) | high-risk",
+    "Prevalence (HRCT) | low-risk"
+    ),
+  t(sapply(columns, summary_stats) %>% round(2))
+)
+
+table_results %>% gt()
+```
+
+```{r}
+set.seed(2025)
+ROC_results_random <- ROC_results %>% 
+  mutate(ID = 1:nrow(ROC_results)) %>% 
+  sample_n(100)
+```
+
+{{< pagebreak >}}
+
+High risk group
+
+```{r}
+ROC_results_random %>%
+  pivot_longer(cols = c(prevalence_high_risk_observed, prevalence_high_risk_true), names_to = "Outcome", values_to = "Prevalence") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "prevalence_high_risk_observed" ~ "Silicosis (CXR) | high-risk",
+    Outcome == "prevalence_high_risk_true" ~ "Silicosis (HRCT) | high-risk"
+  ))) %>% 
+  ggplot(aes(Outcome, Prevalence, group = ID, color = ID)) +
+  geom_point() +
+  geom_line() +
+  stat_summary(fun = mean, geom = "line", lwd = 2, aes(group=1)) +
+  labs(x = "Outcome", y = "Prevalence (%)") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = c(0,25)) + 
+  coord_cartesian(expand = FALSE) +
+# Add a single data point at y = 22, when x = "Silicosis (HRCT) | high-risk" with a label "Rooijackers, et al. 2016"
+  geom_point(aes(y = 22, x = "Silicosis (HRCT) | high-risk"), color = "red") +
+  geom_text(aes(y = 22,  x = "Silicosis (HRCT) | high-risk", label = "Rooijackers, et al. 2016"), vjust = -1) +
+# Add a single data point at y = 22, when x = "Silicosis (HRCT) | high-risk" with a label "Rooijackers, et al. 2016"
+  geom_point(aes(y = 17, x = "Silicosis (HRCT) | high-risk"), color = "red") +
+  geom_text(aes(y = 17,  x = "Silicosis (HRCT) | high-risk", label = "Stigter, et al. 2011"), vjust = -1) 
+  
+# Save in figfolder with white background 
+ggsave(
+  file.path(figfolder, "prevalence_high_risk_non-dif.png"),
+  width = 6, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
+
+Low risk group
+
+```{r}
+ROC_results_random %>%
+  pivot_longer(cols = c(prevalence_low_risk_observed, prevalence_low_risk_true), names_to = "Outcome", values_to = "Prevalence") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "prevalence_low_risk_observed" ~ "Silicosis (CXR) | low-risk",
+    Outcome == "prevalence_low_risk_true" ~ "Silicosis (HRCT) | low-risk"
+  ))) %>% 
+  ggplot(aes(Outcome, Prevalence, group = ID, color = ID)) +
+  geom_point() +
+  geom_line() +
+  stat_summary(fun = mean, geom = "line", lwd = 2, aes(group=1)) +
+  labs(x = "Outcome", y = "Prevalence (%)") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = c(0,25)) + 
+  coord_cartesian(expand = FALSE)
+  
+# Save in figfolder with white background 
+ggsave(
+  file.path(figfolder, "prevalence_low_risk_non-dif.png"),
+  width = 6, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
+
+{{< pagebreak >}}
+
+##### ROC curve analysis
+
+```{r}
+columns <- c(
+  "ROC_observed_outcome", 
+  "ROC_observed_corrected"
+  )
+
+table_results <- data.frame(
+  Outcome = c("CXR", "CXR-corrected"),
+  t(sapply(columns, summary_stats))
+)
+
+table_results %>% gt()
+```
+
+```{r}
+#| output: asis
+bias_absolute <- abs(table_results$Median[1] - table_results$Median[2])
+
+cat("Absolute difference in AUC (CXR-corrected):", bias_absolute, "\n") 
+```
+
+```{r}
+ROC_results %>%
+  pivot_longer(cols = c(ROC_observed_outcome, ROC_observed_corrected), names_to = "Outcome", values_to = "AUC") %>%
+  mutate(Outcome = factor(case_when(
+    Outcome == "ROC_observed_outcome" ~ "Observed",
+    Outcome == "ROC_observed_corrected" ~ "Corrected"
+  )) %>% fct_relevel(c("Observed", "Corrected"))) %>%
+  ggplot(aes(x = Outcome, y = AUC, fill = Outcome)) +
+  geom_boxplot() +
+  ylim(0.5, 1) +
+  labs(x = "Outcome", y = "AUC") +
+  scale_fill_manual(values = c("Observed" = "lightblue", "Corrected" = "skyblue3")) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.line = element_line(colour = "black"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.margin = margin(5, 5, 5, 5, "mm"),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    ) + 
+  expand_limits(x = c(0.5,2.5), y = 0) + 
+  coord_cartesian(expand = FALSE)
+
+ggsave(
+  file.path(figfolder, "AUC_corrected_non-dif.png"),
+  width = 5, 
+  height = 4,
+  dpi = 300,
+  bg = "white"
+  )
+```
+
+{{< pagebreak >}}
+
+### Scenario 2
+
+Same parameters, but with an ordinal classification of low, medium, and high-risk workers.
+
+The distribution of participants across risk categories is as follows:
+
+```{r}
+ROC_results <- read.csv(file.path(tabfolder, "Non-dif_low-med-high.csv"))
+
+columns <- c(
+  "sum_low_risk", 
+  "sum_medium_risk",
+  "sum_high_risk"
+  )
+
+# Summary statistics function 
+summary_stats <- function(column) {
+  c(Median = round(median(ROC_results[[column]]), 3),
+    P = round(quantile(ROC_results[[column]], 0.25), 3),
+    P = round(quantile(ROC_results[[column]], 0.75), 3),
+    Min = round(min(ROC_results[[column]]), 3),
+    Max = round(max(ROC_results[[column]]), 3))
+}
+
+table_results <- data.frame(
+  Risk = c(
+    "Low Risk (<3.75)",
+    "Medium Risk (3.75-4.99)",
+    "High Risk (>=5)"
+    ),
+  t(sapply(columns, summary_stats))
+) 
+
+table_results %>% gt()
+```
+
+The following table shows the distribution of outcome occurrence:
+
+```{r}
+columns <- c(
+  "sum_outcome_observed",
+  "sum_outcome_true",
+  "sum_high_risk_observed",
+  "sum_medium_risk_observed",
+  "sum_low_risk_observed",
+  "sum_high_risk_true",
+  "sum_medium_risk_true",
+  "sum_low_risk_true"
+  )
+
+table_results <- data.frame(
+  Characteristic = c(
+    "Silicosis (CXR)","Silicosis (HRCT)",
+    "Silicosis (CXR) | high-risk",
+    "Silicosis (CXR) | medium-risk",
+    "Silicosis (CXR) | low-risk",
+    "Silicosis (HRCT) | high-risk",
+    "Silicosis (HRCT) | medium-risk",
+    "Silicosis (HRCT) | low-risk"
+    ),
+  t(sapply(columns, summary_stats))
+)
+
+table_results %>% gt()
+```
+
+Prevalence of silicosis in high, medium, and low risk groups
+
+```{r}
+ROC_results <- 
+  ROC_results %>% 
+  mutate(
+    prevalence_high_risk_observed = sum_high_risk_observed/sum_high_risk*100,
+    prevalence_medium_risk_observed = sum_medium_risk_observed/sum_medium_risk*100,
+    prevalence_low_risk_observed = sum_low_risk_observed/sum_low_risk*100, 
+    prevalence_high_risk_true = sum_high_risk_true/sum_high_risk*100,
+    prevalence_medium_risk_true = sum_medium_risk_true/sum_medium_risk*100,
+    prevalence_low_risk_true = sum_low_risk_true/sum_low_risk*100,
+    ID = 1:nrow(ROC_results)
+  )
+```
+
+```{r}
+columns <- c(
+  "prevalence_high_risk_observed",
+  "prevalence_medium_risk_observed",
+  "prevalence_low_risk_observed",
+  "prevalence_high_risk_true",
+  "prevalence_medium_risk_true",
+  "prevalence_low_risk_true"
+  )
+
+table_results <- data.frame(
+  Characteristic = c(
+    "Prevalence (CXR) | high-risk",
+    "Prevalence (CXR) | medium-risk",
+    "Prevalence (CXR) | low-risk",
+    "Prevalence (HRCT) | high-risk",
+    "Prevalence (HRCT) | medium-risk",
+    "Prevalence (HRCT) | low-risk"
+    ),
+  t(sapply(columns, summary_stats) %>% round(2))
+)
+
+table_results %>% gt()
+```
+
+Age distribution in high, medium, and low risk groups
+
+```{r}
+data.frame(
+  Characteristic = c(
+    "Mean age (HRCT) | high-risk",
+    "Mean age (HRCT) | medium-risk",
+    "Mean age (HRCT) | low-risk"
+    ),
+  Mean = c(
+    mean(ROC_results$mean_age_high_risk_true),
+    mean(ROC_results$mean_age_medium_risk_true),
+    mean(ROC_results$mean_age_low_risk_true)
+    ) %>% round(1)
+) %>% gt
+```
+
+{{< pagebreak >}}
+
+#### Session and package dependencies
+
+```{r}
+#| echo: false  
+
+# remove clutter
+session <- sessionInfo()
+session$BLAS <- NULL
+session$LAPACK <- NULL
+session$loadedOnly <- NULL
+# write log file
+writeLines(
+  capture.output(print(session, locale = FALSE)),
+  paste0("sessions/",lubridate::today(), "_session_Simulation_scenarios.txt")
+)                 
+
+session
+```
+
+### Package References
+
+```{r}
+#| output: asis
+report::cite_packages(session)
+```
+
+{{< pagebreak >}}
+
+# References
+
+```{r}
+#| include: false
+
+# Run this chunk if you wish to clear your environment.
+rm(list = ls())
+```
