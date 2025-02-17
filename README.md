@@ -33,6 +33,8 @@ Currently, there is only one relevant .qmd file linked to the R scripts and anal
 
 -   [Misclassification error of silicosis diagnostic prediction rule](R/Silicosis_diagnostic_rule.qmd). Link to the report: [PDF](docs/Silicosis_diagnostic_rule.pdf)
 
+The Amua folder contains code for a mock screening decision model for the [Topics in Medical Decision Making course](https://www.nihes.com/course/el004_topics_in_medical_decision_making_/). 
+
 Although I have made significant efforts to ensure reproducibility of this project, I encourage you to [contact me](mailto:j.mancillagalindo@uu.nl) or post a request in this repository in case you encounter any issues.   
 
 ## Project Structure
@@ -49,6 +51,7 @@ The project structure distinguishes three kinds of folders:
 ├── LICENSE
 ├── README.md
 ├── lexces-silicosis-predict.Rproj
+├── amua                  <- Decision models using Amua. (HW)
 ├── data                  <- All project data files
 │   ├── processed         <- The final, canonical data sets for modeling. (PG)
 │   ├── raw               <- The original, immutable data. (RO)
