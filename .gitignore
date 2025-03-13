@@ -43,6 +43,7 @@ R/*.pdf
 
 # Work for Lexces proposal
 R/Lexces_2.0*
+R/HSP_Silicosis_chapter.qmd
 docs/reports/Lexces_2.0*
 
 # Temporary files created by R markdown
